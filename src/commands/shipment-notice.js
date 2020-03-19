@@ -13,6 +13,10 @@ module.exports = {
       execute: async ([, json]) => http.post('/shipmentNotices', JSON.parse(json)),
       pattern: 'create $payload',
     },
+    listShipmentNotices: {
+      execute: async () => http.get(`/shipmentNotices`),
+      pattern: 'list',
+    },
     readShipmentNotice: {
       execute: async ([id]) => http.get(`/shipmentNotices/${id}`),
       pattern: '$id read',
@@ -25,24 +29,6 @@ module.exports = {
     deleteShipmentNotice: {
       execute: async ([id]) => http.delete(`/shipmentNotices/${id}`),
       pattern: '$id delete',
-    },
-
-    createShipmentNoticeContainer: {
-      execute: async ([, , json]) => http.post('/shipmentNotices/containers', JSON.parse(json)),
-      pattern: 'containers create $payload',
-    },
-    readShipmentNoticeContainer: {
-      execute: async ([, id]) => http.get(`/shipmentNotices/containers/${id}`),
-      pattern: 'containers $id read',
-    },
-    updateShipmentNoticeContainer: {
-      execute: async ([, id, , json]) =>
-        http.put(`/shipmentNotices/containers/${id}`, JSON.parse(json)),
-      pattern: 'containers $id update $payload',
-    },
-    deleteShipmentNoticeContainer: {
-      execute: async ([, id]) => http.delete(`/shipmentNotices/containers/${id}`),
-      pattern: 'containers $id delete',
     },
   },
 };
