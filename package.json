@@ -16,7 +16,7 @@
   },
   "author": "EVRYTHNG",
   "dependencies": {
-    "evrythng": "^5.4.0",
+    "evrythng": "^5.8.0",
     "evrythng-swagger": "^1.0.0",
     "json-schema-ref-parser": "^5.0.3",
     "jsonschema": "^1.2.4",
