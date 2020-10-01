@@ -8,6 +8,8 @@ const switches = require('./switches');
 const COMMAND_LIST = [
   require('../commands/access'),
   require('../commands/accesses'),
+  require('../commands/accessPolicies'),
+  require('../commands/accessTokens'),
   require('../commands/account'),
   require('../commands/action'),
   require('../commands/action-type'),
