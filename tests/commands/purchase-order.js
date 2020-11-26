@@ -50,7 +50,7 @@ describe('purchase-orders', async () => {
       .get('/purchaseOrders?perPage=30')
       .reply(200, {});
 
-    await cli(`purchase-orders list`);
+    await cli('purchase-orders list');
   });
 
   it('should make correct request for \'purchase-orders $id read\'', async () => {
@@ -58,7 +58,7 @@ describe('purchase-orders', async () => {
       .get('/purchaseOrders/234567890?perPage=30')
       .reply(200, {});
 
-    await cli(`purchase-orders 234567890 read`);
+    await cli('purchase-orders 234567890 read');
   });
 
   it('should make correct request for \'purchase-orders $id update $payload\'', async () => {
@@ -104,6 +104,14 @@ describe('purchase-orders', async () => {
       .delete('/purchaseOrders/234567890')
       .reply(204);
 
-    await cli(`purchase-orders 234567890 delete`);
+    await cli('purchase-orders 234567890 delete');
+  });
+
+  it('should make correct request for \'po list\'', async () => {
+    mockApi()
+      .get('/purchaseOrders?perPage=30')
+      .reply(200, {});
+
+    await cli('po list');
   });
 });

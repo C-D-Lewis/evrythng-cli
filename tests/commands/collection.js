@@ -139,4 +139,12 @@ describe('collections', () => {
 
     await cli(`collections ${ID} delete`);
   });
+
+  it('should make correct request for \'c list\'', async () => {
+    mockApi()
+      .get('/collections?perPage=30')
+      .reply(200, {});
+
+    await cli('c list');
+  });
 });

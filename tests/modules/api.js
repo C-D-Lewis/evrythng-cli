@@ -6,7 +6,6 @@
 const { expect } = require('chai');
 const { NAME, mockApi } = require('../util');
 const api = require('../../src/modules/api');
-const cli = require('../../src/functions/cli');
 const commands = require('../../src/modules/commands');
 
 const GREET_COMMAND = {
@@ -118,7 +117,7 @@ describe('api', () => {
   it('should reject a larger plugin version requirement than the current', () => {
     const { version, requireVersion } = api.API;
     const [major, minor, patch] = version.split('.');
-    const futureVersion = `${major}.${parseInt(minor) + 1}.${patch}`;
+    const futureVersion = `${major}.${parseInt(minor, 10) + 1}.${patch}`;
 
     expect(() => requireVersion(futureVersion)).to.throw();
   });
@@ -139,7 +138,7 @@ describe('api', () => {
 
     const op = await api.API.getOperatorScope();
 
-    expect(op.actor.id).to.equal('foo');
+    expect(op.id).to.equal('foo');
     expect(op.apiKey).to.have.length(80);
   });
 });

@@ -11,7 +11,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with place resources.',
-  firstArg: 'places',
+  firstArg: ['places', 'pl'],
   operations: {
     create: {
       execute: async ([, json]) => {

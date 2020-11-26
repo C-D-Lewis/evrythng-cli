@@ -237,4 +237,12 @@ describe('projects', () => {
 
     await cli(`projects ${ID} delete`);
   });
+
+  it('should make correct request for \'prj list\'', async () => {
+    mockApi()
+      .get('/projects?perPage=30')
+      .reply(200, {});
+
+    await cli('prj list');
+  });
 });

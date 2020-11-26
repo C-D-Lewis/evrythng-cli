@@ -8,7 +8,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with Application User resources.',
-  firstArg: 'app-users',
+  firstArg: ['app-users', 'au'],
   operations: {
     createApplicationUser: {
       execute: async ([, json]) => {

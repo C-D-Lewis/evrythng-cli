@@ -11,7 +11,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with collection resources.',
-  firstArg: 'collections',
+  firstArg: ['collections', 'c'],
   operations: {
     // CRUD
     createCollection: {

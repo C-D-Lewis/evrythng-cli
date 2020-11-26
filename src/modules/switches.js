@@ -7,7 +7,7 @@
  * List of switches available.
  *
  * New ones must also be implemented in buildQueryParams() in http.js
- **/
+ */
 const SWITCH_LIST = [
   // Platform query parameters
   {
@@ -69,7 +69,7 @@ const SWITCH_LIST = [
   },
   {
     name: '--api-key',
-    about: 'Use another API key (or operator name) instead of the current Operator\'s API key.',
+    about: 'Use another API key or operator name instead of the current Operator\'s API key.',
     constant: 'API_KEY',
     valueLabel: '<API key|operator name>',
   },

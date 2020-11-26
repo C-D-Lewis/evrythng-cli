@@ -6,11 +6,12 @@
 const { COMMAND_LIST } = require('../modules/commands');
 const { OPTION_LIST } = require('../commands/option');
 const { SWITCH_LIST } = require('../modules/switches');
+const { description, name, version } = require('../../package.json');
 const config = require('../modules/config');
 const indent = require('./indent');
 const logger = require('../modules/logger');
-const { description, name, version } = require('../../package.json');
 
+/** List of CLI examples. */
 const EXAMPLES = [{
   command: 'operators list',
   about: 'See all Operators',
@@ -40,26 +41,47 @@ const EXAMPLES = [{
   about: 'Create products from a CSV file',
 }];
 
+/**
+ * Print the name and version.
+ */
 const printVersion = () => logger.info(`\n${name} v${version}\n${description}`);
 
-const getPaddingLength = items => items.reduce((result, item) => {
-  const newLength = item.length;
-  return (newLength > result) ? newLength : result;
+/**
+ * Find the longest of a list of strings.
+ *
+ * @param {Array<string>} arr - List of strings to compare.
+ * @returns {number} Length of the longest string.
+ */
+const getMaxItemLength = arr => arr.reduce((result, p) => {
+  const newLength = p.length;
+  return newLength > result ? newLength : result;
 }, 0);
 
-const formatList = (list, label, descriptor, sort = true) => {
-  let labels = list.map(item => item[label]);
+/**
+ * Print a formatted list of items, label and descriptor.
+ *
+ * @param {*} list - List of objects that can be formatted.
+ * @param {string} labelKey - Key of the label for each item.
+ * @param {string} descriptorKey - Key of the descriptor of each item.
+ * @param {boolean} [sort] - true to sort the labels.
+ */
+const printFormattedList = (list, labelKey, descriptorKey, sort = true) => {
+  let labels = list.map((p) => {
+    const newLabel = (Array.isArray(p[labelKey]) ? p[labelKey].join(', ') : p[labelKey]);
+    p[labelKey] = newLabel;
+    return newLabel;
+  });
   if (sort) {
     labels = labels.sort();
   }
 
-  const maxPadLength = getPaddingLength(labels);
-  list.forEach((item) => {
-    const padLength = maxPadLength - item[label].length;
-    item[label] = `${item[label]} ${' '.repeat(padLength)}`;
+  const maxPadLength = getMaxItemLength(labels);
+  list.forEach((p) => {
+    const padLength = maxPadLength - p[labelKey].length;
+    p[labelKey] = `${p[labelKey]} ${' '.repeat(padLength)}`;
   });
 
-  list.forEach(item => logger.info(indent(`${item[label]} ${item[descriptor]}`, 4)));
+  list.forEach(p => logger.info(indent(`${p[labelKey]} ${p[descriptorKey]}`, 4)));
 };
 
 module.exports = () => {
@@ -71,27 +93,27 @@ module.exports = () => {
   logger.info(indent('https://github.com/evrythng/evrythng-cli', 4));
 
   logger.info('\nAvailable Commands:\n');
-  logger.info(indent('Specify a command name below to see syntax for all its operations.\n', 4));
-  formatList(COMMAND_LIST.filter(item => !item.fromPlugin), 'firstArg', 'about');
+  logger.info(indent('Specify a command name (or short version) below to see all its operations.\n', 4));
+  printFormattedList(COMMAND_LIST.filter(item => !item.fromPlugin), 'firstArg', 'about');
 
   logger.info('\nAvailable Switches:\n');
   const switchList = SWITCH_LIST.map((item) => {
     item.name = `${item.name}${item.valueLabel ? ` ${item.valueLabel}` : ''}`;
     return item;
   });
-  formatList(switchList, 'name', 'about');
+  printFormattedList(switchList, 'name', 'about');
 
   logger.info('\nAvailable Options:\n');
   logger.info(indent('Use \'options list\' to see current option states.\n', 4));
-  formatList(OPTION_LIST, 'name', 'about');
+  printFormattedList(OPTION_LIST, 'name', 'about');
 
   logger.info('\nUsage Examples:\n');
-  formatList(EXAMPLES, 'about', 'command', false);
+  printFormattedList(EXAMPLES, 'about', 'command', false);
 
   const pluginCommands = COMMAND_LIST.filter(item => item.fromPlugin);
   if (pluginCommands.length) {
     logger.info('\nAvailable Plugin Commands:\n');
-    formatList(pluginCommands, 'firstArg', 'about');
+    printFormattedList(pluginCommands, 'firstArg', 'about');
   }
 
   const using = config.get('using');

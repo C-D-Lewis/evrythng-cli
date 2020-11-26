@@ -7,7 +7,7 @@ const http = require('../modules/http');
 
 module.exports = {
   about: 'Work with purchase orders.',
-  firstArg: 'purchase-orders',
+  firstArg: ['purchase-orders', 'po'],
   operations: {
     createPurchaseOrder: {
       execute: async ([, json]) => http.post('/purchaseOrders', JSON.parse(json)),
@@ -22,8 +22,7 @@ module.exports = {
       pattern: '$purchaseOrderId read',
     },
     updatePurchaseOrder: {
-      execute: async ([purchaseOrderId, , json]) =>
-        http.put(`/purchaseOrders/${purchaseOrderId}`, JSON.parse(json)),
+      execute: async ([purchaseOrderId, , json]) => http.put(`/purchaseOrders/${purchaseOrderId}`, JSON.parse(json)),
       pattern: '$purchaseOrderId update $payload',
     },
     deletePurchaseOrder: {

@@ -3,7 +3,6 @@
  * All rights reserved. Use of this material is subject to license.
  */
 
-const evrythng = require('evrythng');
 const csvFile = require('../modules/csvFile');
 const http = require('../modules/http');
 const jsonFile = require('../modules/jsonFile');
@@ -12,7 +11,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with Thng resources.',
-  firstArg: 'thngs',
+  firstArg: ['thngs', 't'],
   operations: {
     // CRUD
     createThng: {
@@ -148,17 +147,18 @@ module.exports = {
       pattern: '$id redirections $shortDomain list',
     },
     updateThngRedirection: {
-      execute: async ([id, , shortDomain, shortId, , body]) => {
-        return http.shortDomainRequest(shortDomain, {
+      execute: async ([, , shortDomain, shortId, , body]) => http.shortDomainRequest(
+        shortDomain,
+        {
           url: `/redirections/${shortId}`,
           method: 'put',
           body,
-        })
-      },
+        },
+      ),
       pattern: '$id redirections $shortDomain $shortId update $payload',
     },
     deleteThngRedirection: {
-      execute: async ([id, , shortDomain, shortId]) => http.shortDomainRequest(shortDomain, {
+      execute: async ([, , shortDomain, shortId]) => http.shortDomainRequest(shortDomain, {
         url: `/redirections/${shortId}`,
         method: 'delete',
       }),

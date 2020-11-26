@@ -81,7 +81,7 @@ describe('app-users', () => {
       .matchHeader('authorization', API_KEY)
       .post('/users/login', payload)
       .reply(200, {});
-    
+
     await cli(`app-users login ${payload} --api-key ${API_KEY}`);
   });
 
@@ -100,5 +100,13 @@ describe('app-users', () => {
       .reply(200, {});
 
     await cli(`app-users ${ID} delete`);
+  });
+
+  it('should make correct request for \'au list\'', async () => {
+    mockApi()
+      .get('/users?perPage=30')
+      .reply(200, {});
+
+    await cli('app-users list');
   });
 });

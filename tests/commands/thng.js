@@ -263,4 +263,12 @@ describe('thngs', () => {
 
     await cli(`thngs ${ID} delete`);
   });
+
+  it('should make correct request for \'t list\'', async () => {
+    mockApi()
+      .get('/thngs?perPage=30')
+      .reply(200, {});
+
+    await cli('t list');
+  });
 });

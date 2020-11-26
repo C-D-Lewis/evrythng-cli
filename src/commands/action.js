@@ -8,7 +8,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with actions.',
-  firstArg: 'actions',
+  firstArg: ['actions', 'a'],
   operations: {
     createAction: {
       execute: async ([type, , json]) => {

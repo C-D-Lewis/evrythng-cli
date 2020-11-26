@@ -1,27 +1,27 @@
 const http = require('../modules/http');
-const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with access policies (enterprise only).',
-  firstArg: 'access-policies',
+  firstArg: ['access-policies', 'ap'],
   operations: {
     createAccessPolicy: {
-      execute: async ([type, , json]) => {
-        const payload = await util.getPayload('AccessPolicyDocument', json);
-        return http.post(`/accessPolicies`, payload);
-      },
+      execute: async ([, json]) => http.post('/accessPolicies', JSON.parse(json)),
       pattern: 'create $payload',
     },
     listAccessPolicies: {
-      execute: async ([type]) => http.get(`/accessPolicies`),
+      execute: async () => http.get('/accessPolicies'),
       pattern: 'list',
     },
     readAccessPolicy: {
-      execute: async ([type, id]) => http.get(`/accessPolicies/${id}`),
+      execute: async ([id]) => http.get(`/accessPolicies/${id}`),
       pattern: '$id read',
     },
+    updateAccessPolicy: {
+      execute: async ([id, , json]) => http.put(`/accessPolicies/${id}`, JSON.parse(json)),
+      pattern: '$id update $payload',
+    },
     deleteAccessPolicy: {
-      execute: async ([type, id]) => http.delete(`/accessPolicies/${id}`),
+      execute: async ([id]) => http.delete(`/accessPolicies/${id}`),
       pattern: '$id delete',
     },
   },

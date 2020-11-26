@@ -78,7 +78,7 @@ const uploadReactorRepository = async (projectId, applicationId, repoUrl) => {
   execSync(`git clone --quiet ${repoUrl} ./repo`);
 
   // Zip up
-  execSync(`cd repo && zip -vr bundle.zip ./* -x "*.zip"`);
+  execSync('cd repo && zip -vr bundle.zip ./* -x "*.zip"');
 
   // Push to Reactor script API
   uploadBundle(projectId, applicationId, 'repo/bundle.zip');
@@ -89,7 +89,7 @@ const uploadReactorRepository = async (projectId, applicationId, repoUrl) => {
 
 module.exports = {
   about: 'Work with project and application resources.',
-  firstArg: 'projects',
+  firstArg: ['projects', 'prj'],
   operations: {
     // CRUD projects
     createProject: {

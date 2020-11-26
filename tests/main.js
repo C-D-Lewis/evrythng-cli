@@ -1,15 +1,6 @@
-/**
- * (c) Copyright Reserved EVRYTHNG Limited 2018.
- * All rights reserved. Use of this material is subject to license.
- */
-
-const { expect } = require('chai');
-const { ctx } = require('./util');
 const sinon = require('sinon');
-const cli = require('../src/functions/cli');
+const { ctx } = require('./util');
 const config = require('../src/modules/config');
-const expand = require('../src/functions/expand');
-const indent = require('../src/functions/indent');
 const operator = require('../src/commands/operator');
 
 describe('CLI', () => {
@@ -35,6 +26,8 @@ describe('CLI', () => {
   });
 
   require('./commands/access');
+  require('./commands/access-policies');
+  require('./commands/access-tokens');
   require('./commands/accesses');
   require('./commands/account');
   require('./commands/action');

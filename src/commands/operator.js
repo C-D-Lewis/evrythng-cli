@@ -138,7 +138,7 @@ const getRegionUrl = () => {
   const name = config.get('using');
   if (!name) {
     logger.error(`Invalid operator: ${name}`);
-    return;
+    return undefined;
   }
 
   const { region } = config.get('operators')[name];
@@ -214,7 +214,7 @@ const getKey = () => {
 
 module.exports = {
   about: 'View and choose an Operator API Key for global use.',
-  firstArg: 'operators',
+  firstArg: ['operators', 'op'],
   operations: {
     add: {
       execute: addOperator,

@@ -12,7 +12,7 @@ describe('actions', () => {
     mockApi()
       .post(`/actions/${NAME}`, payload)
       .reply(201, {});
-    
+
     await cli(`actions ${NAME} create ${payload}`);
   });
 
@@ -28,7 +28,7 @@ describe('actions', () => {
     mockApi()
       .get(`/actions/${NAME}/${ID}`)
       .reply(200, {});
-    
+
     await cli(`actions ${NAME} ${ID} read`);
   });
 
@@ -36,7 +36,15 @@ describe('actions', () => {
     mockApi()
       .delete(`/actions/${NAME}/${ID}`)
       .reply(200, {});
-      
+
     await cli(`actions ${NAME} ${ID} delete`);
+  });
+
+  it('should make correct request for \'a $type list\'', async () => {
+    mockApi()
+      .get(`/actions/${NAME}?perPage=30`)
+      .reply(200, {});
+
+    await cli(`a ${NAME} list`);
   });
 });

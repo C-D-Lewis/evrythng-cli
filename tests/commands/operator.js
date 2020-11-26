@@ -72,4 +72,13 @@ describe('operators', () => {
     const validate = operator.validateCredentials('us', 'somebadapikey');
     return expect(validate).to.eventually.be.rejected;
   });
+
+  it('should return object for \'op list\'', async () => {
+    const res = await cli('op list');
+
+    expect(res).to.be.an('object');
+    expect(res.operators).to.be.an('array');
+    expect(res.operators).to.have.length.gte(1);
+    expect(res.using).to.be.a('string');
+  });
 });

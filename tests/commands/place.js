@@ -48,4 +48,12 @@ describe('places', () => {
 
     await cli(`places ${ID} delete`);
   });
+
+  it('should make correct request for \'pl list\'', async () => {
+    mockApi()
+      .get('/places?perPage=30')
+      .reply(200, {});
+
+    await cli('pl list');
+  });
 });

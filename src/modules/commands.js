@@ -93,8 +93,11 @@ const identify = args => COMMAND_LIST.reduce((result, item) => {
 
   const { operations, firstArg } = item;
 
-  // firstArg matches
-  if (args[0] === firstArg) {
+  // firstArg matches (string, or array with aliases)
+  const commandIdentified = Array.isArray(firstArg)
+    ? firstArg.includes(args[0])
+    : args[0] === firstArg;
+  if (commandIdentified) {
     const match = Object.keys(operations)
       .find(item2 => matchArgs(args.slice(1), operations[item2].pattern));
 

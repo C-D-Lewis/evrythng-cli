@@ -16,11 +16,11 @@
   },
   "author": "EVRYTHNG",
   "dependencies": {
-    "evrythng": "^5.9.1",
+    "evrythng": "^5.9.3",
     "evrythng-swagger": "^1.0.0",
     "json-schema-ref-parser": "^5.0.3",
     "jsonschema": "^1.2.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "neat-csv": "^3.0.0",
     "semver": "^6.3.0"
   },
@@ -32,7 +32,7 @@
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsdoc": "^3.7.1",
     "eslint-plugin-react": "^7.10.0",
-    "mocha": "^5.2.0",
+    "mocha": "^8.2.1",
     "nock": "^10.0.2",
     "nyc": "^14.1.1",
     "sinon": "^6.1.4"
@@ -51,7 +51,8 @@
     },
     "env": {
       "browser": true,
-      "node": true
+      "node": true,
+      "mocha": true
     }
   },
   "nyc": {

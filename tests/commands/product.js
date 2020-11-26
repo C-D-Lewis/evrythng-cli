@@ -47,7 +47,7 @@ describe('products', () => {
   it('should make correct request for \'products update $payload --ids\'', async () => {
     const payload = JSON.stringify({ tags: ['test'] });
     mockApi()
-      .put(`/products?ids=Up5dVdGwhqSrY5aRwneKddgb%2CUKgVb5QFfRtNQBRRw2Dxmkar`, payload)
+      .put('/products?ids=Up5dVdGwhqSrY5aRwneKddgb%2CUKgVb5QFfRtNQBRRw2Dxmkar', payload)
       .reply(200, {});
 
     await cli(`products update ${payload} --ids Up5dVdGwhqSrY5aRwneKddgb,UKgVb5QFfRtNQBRRw2Dxmkar`);
@@ -164,7 +164,7 @@ describe('products', () => {
   it('should make correct request for \'products $id redirections $shortDomain $shortId delete\'',
     async () => {
       nock('https://tn.gg')
-        .delete(`/redirections/foo`)
+        .delete('/redirections/foo')
         .reply(200);
 
       await cli(`products ${ID} redirections tn.gg foo delete`);
@@ -178,5 +178,13 @@ describe('products', () => {
       .reply(200, {});
 
     await cli(`products ${ID} delete`);
+  });
+
+  it('should make correct request for \'pr list\'', async () => {
+    mockApi()
+      .get('/products?perPage=30')
+      .reply(200, {});
+
+    await cli('pr list');
   });
 });

@@ -4,7 +4,6 @@
  */
 
 const http = require('../modules/http');
-const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with ADI orders.',

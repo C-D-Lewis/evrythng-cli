@@ -3,7 +3,7 @@
  * All rights reserved. Use of this material is subject to license.
  */
 
-const { ID, mockApi } = require('../util');
+const { mockApi } = require('../util');
 const cli = require('../../src/functions/cli');
 
 const shipmentNoticePayload = JSON.stringify({
@@ -14,39 +14,22 @@ const shipmentNoticePayload = JSON.stringify({
   parties: [
     {
       id: 'gs1:414:01251',
-      type: 'ship-from'
+      type: 'ship-from',
     },
     {
       name: 'The Landmark, Shop No. G14',
       type: 'ship-to',
       address: {
         street: '113-114, Central',
-        city: 'Hong Kong'
-      }
-    }
+        city: 'Hong Kong',
+      },
+    },
   ],
   tags: [
     'ongoing',
     'important',
-    'access-all'
-  ]
-});
-
-const containerPayload = JSON.stringify({
-  containerId: 'gs1:21:238467',
-  transportationType: 'Pallet',
-  products: [
-    {
-      id: 'gs1:01:000000001234',
-      quantity: 562,
-      unitOfMeasure: 'piece'
-    }
+    'access-all',
   ],
-  tags: [
-    'ongoing',
-    'important',
-    'access-all'
-  ]
 });
 
 describe('shipment-notices', async () => {
@@ -63,7 +46,15 @@ describe('shipment-notices', async () => {
       .get('/shipmentNotices/Ur2KGCnqbfsphqaabbcbsqnq')
       .reply(200, {});
 
-    await cli(`shipment-notices Ur2KGCnqbfsphqaabbcbsqnq read`);
+    await cli('shipment-notices Ur2KGCnqbfsphqaabbcbsqnq read');
+  });
+
+  it('should make correct request for \'shipment-notices list\'', async () => {
+    mockApi()
+      .get('/shipmentNotices?perPage=30')
+      .reply(200, {});
+
+    await cli('shipment-notices list');
   });
 
   it('should make correct request for \'shipment-notices $id update $payload\'', async () => {
@@ -79,42 +70,14 @@ describe('shipment-notices', async () => {
       .delete('/shipmentNotices/Ur2KGCnqbfsphqaabbcbsqnq')
       .reply(204);
 
-    await cli(`shipment-notices Ur2KGCnqbfsphqaabbcbsqnq delete`);
+    await cli('shipment-notices Ur2KGCnqbfsphqaabbcbsqnq delete');
   });
-});
 
-describe('shipment-notices containers', async () => {
-  it('should make correct request for \'shipment-notices containers create $payload\'',
-    async () => {
-      mockApi()
-        .post('/shipmentNotices/containers', containerPayload)
-        .reply(201, containerPayload);
-
-      await cli(`shipment-notices containers create ${containerPayload}`);
-    });
-
-  it('should make correct request for \'shipment-notices containers $id read\'', async () => {
+  it('should make correct request for \'asn list\'', async () => {
     mockApi()
-      .get('/shipmentNotices/containers/Ur2KGCnqbfsphqaabbcbsqnq')
+      .get('/shipmentNotices?perPage=30')
       .reply(200, {});
 
-    await cli(`shipment-notices containers Ur2KGCnqbfsphqaabbcbsqnq read`);
-  });
-
-  it('should make correct request for \'shipment-notices containers $id update $payload\'',
-    async () => {
-      mockApi()
-        .put('/shipmentNotices/containers/Ur2KGCnqbfsphqaabbcbsqnq', containerPayload)
-        .reply(200, containerPayload);
-
-      await cli(`shipment-notices containers Ur2KGCnqbfsphqaabbcbsqnq update ${containerPayload}`);
-    });
-
-  it('should make correct request for \'shipment-notices containers $id delete\'', async () => {
-    mockApi()
-      .delete('/shipmentNotices/containers/Ur2KGCnqbfsphqaabbcbsqnq')
-      .reply(204);
-
-    await cli(`shipment-notices containers Ur2KGCnqbfsphqaabbcbsqnq delete`);
+    await cli('asn list');
   });
 });

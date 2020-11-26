@@ -11,7 +11,7 @@ const util = require('../modules/util');
 
 module.exports = {
   about: 'Work with product resources.',
-  firstArg: 'products',
+  firstArg: ['products', 'pr'],
   operations: {
     // CRUD
     createProduct: {

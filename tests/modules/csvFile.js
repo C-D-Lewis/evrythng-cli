@@ -9,7 +9,6 @@ const chaiAsPromised = require('chai-as-promised');
 const fs = require('fs');
 const neatCsv = require('neat-csv');
 const { mockApi } = require('../util');
-const config = require('../../src/modules/config');
 const csvFile = require('../../src/modules/csvFile');
 const switches = require('../../src/modules/switches');
 const util = require('../../src/modules/util');
