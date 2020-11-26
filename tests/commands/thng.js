@@ -47,7 +47,7 @@ describe('thngs', () => {
   it('should make correct request for \'thngs update $payload --ids\'', async () => {
     const payload = JSON.stringify({ tags: ['test'] });
     mockApi()
-      .put(`/thngs?ids=Up5dVdGwhqSrY5aRwneKddgb%2CUKgVb5QFfRtNQBRRw2Dxmkar`, payload)
+      .put('/thngs?ids=Up5dVdGwhqSrY5aRwneKddgb%2CUKgVb5QFfRtNQBRRw2Dxmkar', payload)
       .reply(200, {});
 
     await cli(`thngs update ${payload} --ids Up5dVdGwhqSrY5aRwneKddgb,UKgVb5QFfRtNQBRRw2Dxmkar`);
@@ -160,15 +160,14 @@ describe('thngs', () => {
       const payload = JSON.stringify({
         defaultRedirectUrl: 'https://google.com/{shortId}/',
         type: 'thng',
-        evrythngId: ID
+        evrythngId: ID,
       });
       nock('https://tn.gg')
         .post('/redirections', payload)
         .reply(201, {});
 
       await cli(`thngs ${ID} redirections tn.gg create ${payload}`);
-    }
-  );
+    });
 
   it('should make correct request for \'thngs $id redirections $shortDomain list\'', async () => {
     nock('https://tn.gg')
@@ -187,18 +186,17 @@ describe('thngs', () => {
         .reply(200, {});
 
       await cli(`thngs ${ID} redirections tn.gg foo update ${payload}`);
-    }
+    },
   );
 
   it('should make correct request for \'thngs $id redirections $shortDomain $shortId delete\'',
     async () => {
       nock('https://tn.gg')
-        .delete(`/redirections/foo`)
+        .delete('/redirections/foo')
         .reply(200);
 
       await cli(`thngs ${ID} redirections tn.gg foo delete`);
-    }
-  );
+    });
 
   // Thng location
   it('should make correct request for \'thngs $id location read\'', async () => {
@@ -211,7 +209,7 @@ describe('thngs', () => {
 
   it('should make correct request for \'thngs $id location update $payload\'', async () => {
     const payload = JSON.stringify([{
-      position: { type: 'Point', coordinates: [ -17.3, 36 ] },
+      position: { type: 'Point', coordinates: [-17.3, 36] },
     }]);
     mockApi()
       .put(`/thngs/${ID}/location`, payload)
@@ -239,7 +237,6 @@ describe('thngs', () => {
   });
 
   it('should make correct request for \'thngs $id device-key read\'', async () => {
-    const payload = JSON.stringify({ thngId: ID });
     mockApi()
       .get(`/auth/evrythng/thngs/${ID}`)
       .reply(200, {});
@@ -264,11 +261,39 @@ describe('thngs', () => {
     await cli(`thngs ${ID} delete`);
   });
 
+  // firstArg aliases
   it('should make correct request for \'t list\'', async () => {
     mockApi()
       .get('/thngs?perPage=30')
       .reply(200, {});
 
     await cli('t list');
+  });
+
+  // Verb aliases
+  it('should make correct request for \'t c $payload\'', async () => {
+    const payload = JSON.stringify({ name: 'test' });
+    mockApi()
+      .post('/thngs', payload)
+      .reply(201, {});
+
+    await cli(`t c ${payload}`);
+  });
+
+  it('should make correct request for \'t l \'', async () => {
+    mockApi()
+      .get('/thngs?perPage=30')
+      .reply(200, []);
+
+    await cli('t l');
+  });
+
+  it('should make correct request for \'t $id u $payload\'', async () => {
+    const payload = JSON.stringify({ name: 'test' });
+    mockApi()
+      .put(`/thngs/${ID}`, payload)
+      .reply(200, {});
+
+    await cli(`t ${ID} u ${payload}`);
   });
 });

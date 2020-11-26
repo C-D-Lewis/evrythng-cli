@@ -5,6 +5,7 @@
 
 const switches = require('./switches');
 
+/** Full list of command modules */
 const COMMAND_LIST = [
   require('../commands/access'),
   require('../commands/accesses'),
@@ -34,14 +35,32 @@ const COMMAND_LIST = [
   require('../commands/url'),
 ];
 
+/**
+ * Format a pattern with short verbs included.
+ *
+ * @param {string} pattern - Pattern to format.
+ * @returns {string} Pattern with short verbs added.
+ */
+const formatWithShortVerbs = pattern => pattern
+  .replace('create', '[create|c]')
+  .replace('list', '[list|l]')
+  .replace('read', '[read|r]')
+  .replace('update', '[update|u]');
+
+/**
+ * Show syntax options for a given command.
+ *
+ * @param {object} command - The command to display.
+ */
 const showSyntax = (command) => {
   const { firstArg, operations } = command;
+  const finalFirstArg = Array.isArray(firstArg) ? `[${firstArg.join('|')}]` : firstArg;
   const specs = Object.keys(operations).map((item) => {
     const { pattern, helpPattern } = operations[item];
-    return `evrythng ${firstArg} ${helpPattern || pattern}`;
+    return `  evrythng ${finalFirstArg} ${formatWithShortVerbs(helpPattern || pattern)}`;
   });
 
-  throw new Error(`Available operations for '${firstArg}':\n${specs.join('\n')}`);
+  throw new Error(`Available operations for '${finalFirstArg}':\n${specs.join('\n')}`);
 };
 
 /**
@@ -79,6 +98,13 @@ const matchArg = (arg = '', spec) => {
   if (spec.startsWith('$')) {
     return true;
   }
+
+  // CRUD verbs can be shorthand
+  if (spec === 'create') return ['create', 'c'].includes(arg);
+  if (spec === 'list') return ['list', 'l'].includes(arg);
+  if (spec === 'read') return ['read', 'r'].includes(arg);
+  if (spec === 'update') return ['update', 'u'].includes(arg);
+  // But NOT delete, which should always be explicit
 
   // else must be the same as the pattern spec
   return arg === spec;
