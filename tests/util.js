@@ -1,15 +1,6 @@
-/**
- * (c) Copyright Reserved EVRYTHNG Limited 2018.
- * All rights reserved. Use of this material is subject to license.
- */
-
-const _  = require('lodash');
-const sinon = require('sinon');
 const nock = require('nock');
 const config = require('../src/modules/config');
 const cli = require('../src/functions/cli');
-const http = require('../src/modules/http');
-const operator = require('../src/commands/operator');
 const switches = require('../src/modules/switches');
 
 const ctx = {};

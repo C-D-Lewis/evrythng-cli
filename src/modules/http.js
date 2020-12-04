@@ -186,6 +186,11 @@ const printResponse = async (res) => {
     return res;
   }
 
+  // Silent switch - just return data
+  if (switches.SILENT) {
+    return res.data;
+  }
+
   // Wait until page reached
   const page = switches.PAGE;
   if (page) {

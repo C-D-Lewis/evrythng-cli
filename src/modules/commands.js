@@ -9,8 +9,8 @@ const switches = require('./switches');
 const COMMAND_LIST = [
   require('../commands/access'),
   require('../commands/accesses'),
-  require('../commands/accessPolicies'),
-  require('../commands/accessTokens'),
+  require('../commands/access-policy'),
+  require('../commands/access-token'),
   require('../commands/account'),
   require('../commands/action'),
   require('../commands/action-type'),
@@ -26,7 +26,7 @@ const COMMAND_LIST = [
   require('../commands/product'),
   require('../commands/project'),
   require('../commands/purchase-order'),
-  require('../commands/rateLimit'),
+  require('../commands/rate-limit'),
   require('../commands/redirector'),
   require('../commands/region'),
   require('../commands/role'),
@@ -113,9 +113,10 @@ const matchArg = (arg = '', spec) => {
 const matchArgs = (args, pattern) => pattern.split(' ').every((item, i) => matchArg(args[i], item));
 
 const identify = args => COMMAND_LIST.reduce((result, item) => {
-  if (result) {
-    return result;
-  }
+  if (result) return result;
+
+  // Repl is special command
+  if (args[0] === 'repl') return require('./repl');
 
   const { operations, firstArg } = item;
 

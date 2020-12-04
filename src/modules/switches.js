@@ -94,6 +94,11 @@ const SWITCH_LIST = [
     about: 'Print response in non-JSON friendly format.',
     constant: 'SIMPLE',
   },
+  {
+    name: '--silent',
+    about: 'Don\'t output response.',
+    constant: 'SILENT',
+  },
 
   // Import/export switches
   {

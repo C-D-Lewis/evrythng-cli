@@ -32,6 +32,7 @@ describe('accounts', () => {
     await cli(`accounts ${ID} update ${payload}`);
   });
 
+  // Accesses
   it('should make correct request for \'accounts $id accesses list\'', async () => {
     mockApi()
       .get(`/accounts/${ID}/accesses?perPage=30`)
@@ -57,6 +58,7 @@ describe('accounts', () => {
     await cli(`accounts ${ID} accesses ${ID} update ${payload}`);
   });
 
+  // Domains
   it('should make correct request for \'accounts $id domains list\'', async () => {
     mockApi()
       .get(`/accounts/${ID}/domains?perPage=30`)
@@ -71,5 +73,48 @@ describe('accounts', () => {
       .reply(200, {});
 
     await cli(`accounts ${ID} short-domains list`);
+  });
+
+  // Operator Accesses
+  it('should make correct request for \'accounts $id operator-accesses create\'', async () => {
+    const payload = { name: 'test access' };
+    mockApi()
+      .post(`/accounts/${ID}/operatorAccess`, payload)
+      .reply(201, {});
+
+    await cli(`accounts ${ID} operator-accesses create ${JSON.stringify(payload)}`);
+  });
+
+  it('should make correct request for \'accounts $id operator-accesses list\'', async () => {
+    mockApi()
+      .get(`/accounts/${ID}/operatorAccess?perPage=30`)
+      .reply(200, [{}]);
+
+    await cli(`accounts ${ID} operator-accesses list`);
+  });
+
+  it('should make correct request for \'accounts $id operator-accesses $id read\'', async () => {
+    mockApi()
+      .get(`/accounts/${ID}/operatorAccess/${ID}`)
+      .reply(200, {});
+
+    await cli(`accounts ${ID} operator-accesses ${ID} read`);
+  });
+
+  it('should make correct request for \'accounts $id operator-accesses $id update $payload\'', async () => {
+    const payload = { name: 'test access' };
+    mockApi()
+      .put(`/accounts/${ID}/operatorAccess/${ID}`, payload)
+      .reply(200, {});
+
+    await cli(`accounts ${ID} operator-accesses ${ID} update ${JSON.stringify(payload)}`);
+  });
+
+  it('should make correct request for \'accounts $id operator-accesses $id delete\'', async () => {
+    mockApi()
+      .delete(`/accounts/${ID}/operatorAccess/${ID}`)
+      .reply(204, {});
+
+    await cli(`accounts ${ID} operator-accesses ${ID} delete`);
   });
 });

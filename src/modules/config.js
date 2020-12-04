@@ -6,6 +6,7 @@
 const { validate } = require('jsonschema');
 const fs = require('fs');
 
+/** Default configuration file if none exists */
 const DEFAULT_CONFIG = {
   using: '',
   operators: {},
@@ -18,7 +19,8 @@ const DEFAULT_CONFIG = {
   regions: {
     us: 'https://api.evrythng.com',
     eu: 'https://api-eu.evrythng.com',
-    enterprise: 'https://api.evrythng.io/v2',
+    'enterprise-us': 'https://api.evrythng.io/v2',
+    'enterprise-eu': 'https://api.eu.evrythng.io/v2',
   },
 };
 

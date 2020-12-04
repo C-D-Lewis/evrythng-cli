@@ -39,7 +39,7 @@ module.exports = {
         const url = `/accounts/${accountId}/accesses/${accessId}`;
         return http.put(url, JSON.parse(json));
       },
-      pattern: '$id accesses $id update $json',
+      pattern: '$id accesses $id update $payload',
     },
 
     // Account domains and short domains
@@ -50,6 +50,37 @@ module.exports = {
     listAccountShortDomains: {
       execute: async ([id]) => http.get(`/accounts/${id}/shortDomains`),
       pattern: '$id short-domains list',
+    },
+
+    // Operator access
+    createOperatorAccess: {
+      execute: async ([id, , , json]) => http.post(`/accounts/${id}/operatorAccess`, JSON.parse(json)),
+      pattern: '$id operator-accesses create $payload',
+    },
+    listOperatorAccesses: {
+      execute: async ([id]) => http.get(`/accounts/${id}/operatorAccess`),
+      pattern: '$id operator-accesses list',
+    },
+    readOperatorAccess: {
+      execute: async ([accountId, , accessId]) => {
+        const url = `/accounts/${accountId}/operatorAccess/${accessId}`;
+        return http.get(url);
+      },
+      pattern: '$id operator-accesses $id read',
+    },
+    updateOperatorAccess: {
+      execute: async ([accountId, , accessId, , json]) => {
+        const url = `/accounts/${accountId}/operatorAccess/${accessId}`;
+        return http.put(url, JSON.parse(json));
+      },
+      pattern: '$id operator-accesses $id update $payload',
+    },
+    deleteOperatorAccess: {
+      execute: async ([accountId, , accessId]) => {
+        const url = `/accounts/${accountId}/operatorAccess/${accessId}`;
+        return http.delete(url);
+      },
+      pattern: '$id operator-accesses $id delete',
     },
   },
 };
