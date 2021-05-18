@@ -4,7 +4,6 @@
  */
 
 const { expect } = require('chai');
-const cli = require('../../src/functions/cli');
 
 let config;
 

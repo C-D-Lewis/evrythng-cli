@@ -19,8 +19,8 @@ const DEFAULT_CONFIG = {
   regions: {
     us: 'https://api.evrythng.com',
     eu: 'https://api-eu.evrythng.com',
-    'enterprise-us': 'https://api.evrythng.io/v2',
-    'enterprise-eu': 'https://api.eu.evrythng.io/v2',
+    'us-v2': 'https://api.evrythng.io/v2',
+    'eu-v2': 'https://api.eu.evrythng.io/v2',
   },
 };
 
