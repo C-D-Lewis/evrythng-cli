@@ -9,14 +9,15 @@
     "start": "node ./src/main.js",
     "lint": "./node_modules/.bin/eslint src/",
     "test": "./node_modules/.bin/nyc ./node_modules/.bin/_mocha tests/main.js",
-    "install-mock-config": "cp ./tests/mockConfig.json /root/.evrythng-cli-config"
+    "install-mock-config": "cp ./tests/mockConfig.json /root/.evrythng-cli-config",
+    "prepublishOnly": "npm test"
   },
   "bin": {
     "evrythng": "bin/cli.js"
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "evrythng": "^5.10.1",
+    "evrythng": "^6.0.3",
     "evrythng-swagger": "^1.0.0",
     "json-schema-ref-parser": "^5.0.3",
     "jsonschema": "^1.2.4",

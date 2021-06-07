@@ -7,6 +7,7 @@
 - [Installation](#installation)
 - [Usage and Help](#usage-and-help)
 - [Authentication](#authentication)
+- [Useful example](#useful-examples)
 - [Plugin API](#plugin-api)
 - [Architecture](#architecture)
 - [Running Tests](#running-tests)
@@ -47,7 +48,7 @@ $ export OPERATOR_API_KEY=$(evrythng operators personal read)
 
 Install the `npm` module globally as a command:
 
-```
+```shell
 $ npm i -g @chris-lewis/evrythng-cli
 ```
 
@@ -55,7 +56,9 @@ Then add at least one Operator using an Operator API Key available
 from the 'Account Settings' page of the
 [EVRYTHNG Dashboard](https://dashboard.evrythng.com):
 
-```
+> This is automatically requested when first run.
+
+```shell
 $ evrythng operators add $name $region $apiKey
 ```
 
@@ -63,7 +66,7 @@ For example:
 
 > Key truncated for brevity.
 
-```
+```shell
 $ evrythng operators add prod us AGiWrH5OteA4aHiM...
 ```
 
@@ -73,11 +76,24 @@ $ evrythng operators add prod us AGiWrH5OteA4aHiM...
 After installation, the global `npm` module can be used directly. In general,
 the argument structure is:
 
-```
+```shell
 $ evrythng <command> <params>... [<payload>] [<switches>...]
 ```
 
+For example, creating a new product:
+
+```shell
+$ evrythng products create '{"name":"Some Fancy New Product"}'
+```
+
 Run `evrythng` to see all commands, switches, and options.
+
+Some resources and operation types have short aliases. For example, to list
+Thngs:
+
+```shell
+$ evrythng t l
+```
 
 
 ## Authentication
@@ -115,8 +131,52 @@ Authentication is provided in two ways:
 > You must add at least one Operator before you can begin using the CLI. You'll
 > be guided the first time if you forget.
 
+All Operators refer to a 'region' - an API URL where they exist in the EVRYTHNG
+Platform. See all available regions:
 
-## Plugins
+```shell
+$ evrythng region list
+```
+
+Or even add your own!
+
+```shell
+evrythng region add test https://test.example.com
+```
+
+
+## Useful Examples
+
+Read all places with IDs and names:
+
+```shell
+$ evrythng places list --summary
+```
+
+Read a Thng with a unique identifier, for use in a script:
+
+```bash
+#!/bin/bash
+
+THNG_ID=$(evrythng thngs gs1:21:test-serial-1 read)
+
+echo $THNG_ID
+```
+
+Export places to CSV file:
+
+```shell
+$ evrythng places list --to-csv places.csv --to-page 10 --per-page 100
+```
+
+Create products from a CSV file:
+
+```shell
+$ evrythng products create --from-csv products.csv
+```
+
+
+## Plugin API
 
 The EVRYTHNG CLI allows plugins to be created and installed in order to
 add/extend custom functionality as the user requires. These plugins are provided

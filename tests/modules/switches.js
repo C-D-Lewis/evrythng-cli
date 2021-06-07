@@ -150,7 +150,7 @@ describe('switches', () => {
   it('should accept the --build switch');
 
   it('should accept the --to-csv switch', async () => {
-    const mock = mockApi()
+    mockApi()
       .persist()
       .get('/thngs?perPage=30')
       .reply(200, []);
@@ -161,10 +161,10 @@ describe('switches', () => {
 
   it('should accept the --from-csv switch');
 
-  it('should accept the --with-redirections switch');
+  it('should accept the --redirections switch');
 
   it('should accept the --to-json switch', async () => {
-    const mock = mockApi()
+    mockApi()
       .persist()
       .get('/thngs?perPage=30')
       .reply(200, []);

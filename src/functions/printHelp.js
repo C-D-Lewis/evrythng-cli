@@ -14,10 +14,10 @@ const logger = require('../modules/logger');
 /** List of CLI examples. */
 const EXAMPLES = [{
   command: 'operators list',
-  about: 'See all Operators',
+  about: 'See all Operators stored',
 }, {
   command: 'operators add prod us AGiWrH5OteA4aHiM...',
-  about: 'Add a new Operator',
+  about: 'Add a new Operator to the US region',
 }, {
   command: 'thngs list',
   about: 'Read a page of Thngs',
@@ -34,10 +34,10 @@ const EXAMPLES = [{
   command: 'thngs create --build',
   about: 'Interactively create a Thng',
 }, {
-  command: 'products list --per-page 100 --to-csv ./products.csv',
+  command: 'products list --per-page 100 --to-csv products.csv',
   about: 'Save products to a CSV file',
 }, {
-  command: 'products create --from-csv ./products.csv --project UnghCKffVg8a9KwRwE5C9qBs',
+  command: 'products create --from-csv products.csv',
   about: 'Create products from a CSV file',
 }];
 

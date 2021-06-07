@@ -46,7 +46,7 @@ const SWITCH_LIST = [
   },
   {
     name: '--ids',
-    about: 'Specify the \'ids\' query parameter with a list of specific IDs.',
+    about: 'Specify the \'ids\' query parameter with a list of IDs.',
     constant: 'IDS',
     valueLabel: '<list of IDs>',
   },
@@ -64,14 +64,14 @@ const SWITCH_LIST = [
   // CLI helper switches
   {
     name: '--summary',
-    about: 'Show a list of resources as a summarised (id, name) single-line format.',
+    about: 'Show a list of resources as a (id, name) single-line format.',
     constant: 'SUMMARY',
   },
   {
     name: '--api-key',
-    about: 'Use another API key or operator name instead of the current Operator\'s API key.',
+    about: 'Use another API key or operator instead of the currently selected one.',
     constant: 'API_KEY',
-    valueLabel: '<API key|operator name>',
+    valueLabel: '<API key|name>',
   },
   {
     name: '--expand',
@@ -115,13 +115,13 @@ const SWITCH_LIST = [
   },
   {
     name: '--from-csv',
-    about: 'Load resources from a CSV file that was previously exported with --to-csv.',
+    about: 'Load resources from a CSV file previously exported with --to-csv.',
     constant: 'FROM_CSV',
     valueLabel: '<input file>',
   },
   {
-    name: '--with-redirections',
-    about: 'When importing/exporting, include each resource\'s redirection URL.',
+    name: '--redirections',
+    about: 'When importing/exporting, include redirection URL.',
     constant: 'WITH_REDIRECTIONS',
     valueLabel: '<short domain>',
   },

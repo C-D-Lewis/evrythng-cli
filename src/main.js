@@ -39,6 +39,11 @@ const main = async () => {
       e = await e.json().catch(() => e.text());
     }
 
+    // String?
+    try {
+      e = JSON.parse(e);
+    } catch (e1) {}
+
     // API error response
     if (e.errors) {
       const errStr = errorDetail ? JSON.stringify(e, null, 2) : e.errors[0];
