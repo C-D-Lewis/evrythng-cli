@@ -7,7 +7,7 @@
 - [Installation](#installation)
 - [Usage and Help](#usage-and-help)
 - [Authentication](#authentication)
-- [Useful example](#useful-examples)
+- [Useful examples](#useful-examples)
 - [Plugin API](#plugin-api)
 - [Architecture](#architecture)
 - [Running Tests](#running-tests)
