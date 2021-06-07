@@ -4,6 +4,13 @@
 
 > Requires Node.js version 10 or greater
 
+- [Installation](#installation)
+- [Usage and Help](#usage-and-help)
+- [Authentication](#authentication)
+- [Plugin API](#plugin-api)
+- [Architecture](#architecture)
+- [Running Tests](#running-tests)
+
 Command Line Interface (CLI) for managing credentials and working with the
 [EVRYTHNG API](https://developers.evrythng.com) from a terminal or scripts with
 ease. For example, all Thngs with the `device` tag!
@@ -401,9 +408,7 @@ Provide values for each field (or leave blank to skip):
 ```
 
 
-## Development
-
-### Running Tests
+## Running Tests
 
 Run `npm test` to run the Mocha tests in the `tests` directory.
 
