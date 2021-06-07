@@ -109,9 +109,20 @@ const buildParamString = (method, url) => {
     .reduce((res, item, i) => i === 0 ? `${res}${item}` : `${res}&${item}`, '?');
 };
 
+/**
+ * Format headers to readable strings.
+ *
+ * @param {object} headers - Headers to format.
+ * @returns {Array<string>} List of formatted headers.
+ */
 const formatHeaders = headers => Object.keys(headers)
   .map(item => `${item}: ${headers[item]}`);
 
+/**
+ * Print request.
+ *
+ * @param {object} options - Request options.
+ */
 const printRequest = (options) => {
   logger.info(`\n>> ${options.method} ${options.url}`);
   formatHeaders(options.displayHeaders).forEach(item => logger.info(item));
@@ -122,55 +133,65 @@ const printRequest = (options) => {
 };
 
 /**
- * Usually an array with fetch
+ * Extract the next link from the encoded header.
+ *
+ * @param {string} link - Encoded Link header value.
+ * @returns {string} URL of the next page.
  */
-const extractUrlFromLink = (links) => {
-  const [link] = links;
+const extractUrlFromLink = (link) => {
   const encodedUrl = link.slice(1, link.indexOf('>') - link.length);
   return parse(decodeURIComponent(encodedUrl)).path;
 };
 
+/**
+ * Go to and return a page. Pagination may take a while.
+ *
+ * @param {object} res - Fetch response object.
+ * @param {number} endPage - End page number to scroll to.
+ * @returns {object} Last fetch response object.
+ */
 const goToPage = async (res, endPage) => {
   for (let page = 0; page <= endPage; page += 1) {
-    if (!res.headers.link) {
+    const link = res.headers.get('link');
+    if (!link) {
       logger.info('No more pages. Returning last found page.');
       return res;
     }
 
-    const url = extractUrlFromLink(res.headers.link);
+    const url = extractUrlFromLink(link);
     res = await evrythng.api({
       apiKey: operator.getKey(),
       fullResponse,
       url,
     });
-    if (page === endPage - 1) {
-      return res;
-    }
+    if (page === endPage - 1) return res;
   }
 
   return res;
 };
 
+/**
+ * Fetch more pages until the required number is accumulated.
+ *
+ * @param {object} res - Fetch response object.
+ * @param {string} max - Maximum pages to get.
+ * @returns {Array<object>} Array of ALL items fetched.
+ */
 const getMorePages = async (res, max) => {
+  max = parseInt(max, 10);
+
   const items = [...res.data];
-
   for (let page = 1; page < max; page += 1) {
-    if (!res.headers.link) {
-      break;
-    }
+    const link = res.headers.get('link');
+    if (!link) break;
 
-    const url = extractUrlFromLink(res.headers.link);
     res = await evrythng.api({
       apiKey: operator.getKey(),
       fullResponse,
-      url,
+      url: extractUrlFromLink(link),
     });
 
-    // Patch data and headers
-    res.data = await res.json();
-    res.headers = res.headers._headers;
-
-    items.push(...res.data);
+    items.push(...await res.json());
     logger.info(`Reading - ${items.length} items`, true);
   }
 

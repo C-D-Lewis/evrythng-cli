@@ -1,10 +1,39 @@
-# evrythng-cli
+# @chris-lewis/evrythng-cli
+
+> Fork of the official [`evrythng-cli`](https://github.com/evrythng/evrythng-cli).
 
 > Requires Node.js version 10 or greater
 
-Command Line Interface (CLI) for working with the
+Command Line Interface (CLI) for managing credentials and working with the
 [EVRYTHNG API](https://developers.evrythng.com) from a terminal or scripts with
-ease.
+ease. For example, all Thngs with the `device` tag!
+
+```shell
+$ evrythng thngs list --filter tags=device
+```
+
+See what's possible:
+
+```shell
+# See all commands, options, and switches
+$ evrythng
+
+# See all operations for a given resource type, such as Thngs:
+$ evrythng thngs
+```
+
+Manage multiple API keys:
+
+```shell
+# Add a new Operator API key to save
+$ evrythng operators add personal eu <some key>
+
+# See saved keys
+$ evrythng operators list
+
+# or use in scripts
+$ export OPERATOR_API_KEY=$(evrythng operators personal read)
+```
 
 
 ## Installation
@@ -12,7 +41,7 @@ ease.
 Install the `npm` module globally as a command:
 
 ```
-$ npm i -g evrythng-cli
+$ npm i -g @chris-lewis/evrythng-cli
 ```
 
 Then add at least one Operator using an Operator API Key available
@@ -46,19 +75,38 @@ Run `evrythng` to see all commands, switches, and options.
 
 ## Authentication
 
-Authentication is provided in two ways.
+Authentication is provided in two ways:
 
 1. Using the `operators` command to store Operator API Keys associated with
    different accounts and regions in the user's `~/.evrythng-cli-config` file.
    Any request that can be done as an Operator is done with the currently
    selected Operator.
 
+   ```shell
+   # Select an Operator
+   evrythng operators personal-eu use
+
+   # Use in a command
+   evrythng places list --per-page 10
+   ```
+
 2. Using the `--api-key` switch to either override the currently selected
    operator's API key, or provide a required key (such as the Application API
    Key when creating Application Users). An existing operator's name chosen
    when using `operators add` is also accepted.
 
-> You must add at least one Operator before you can begin using the CLI.
+   > Key truncated for brevity.
+   
+   ```shell
+   # Use a raw key
+   evrythng accounts list --api-key AGiWrH5OteA4aHiM...
+
+   # Or another saved operator by name
+   evrythng accounts list --api-key personal-eu
+   ```
+
+> You must add at least one Operator before you can begin using the CLI. You'll
+> be guided the first time if you forget.
 
 
 ## Plugins
@@ -80,7 +128,7 @@ In order to be considered a plugin, its `npm` module must meet the following:
   installed globally with `-g` or as a project dependency (i.e: in
   `node_modules`).
 * Have a package name beginning the prefix `evrythng-cli-plugin-`.
-* Have a single source file identifyable when it is `require`d, such as setting
+* Have a single source file identifiable when it is `require`d, such as setting
   `main` in its `package.json`.
 * That file must export a single function, which is provided the `api` parameter
   (see below). Asynchronous functions are not currently supported.
@@ -106,7 +154,7 @@ module.exports = (api) => {
     firstArg: 'greet',
     operations: {
       greetSomeoneByName: {
-        execute: ([name]) => console.log(`Hello there, ${name}!`),
+        execute: ([name]) => console.log(`\nHello there, ${name}!`),
         pattern: '$name',
       },
     },
@@ -125,8 +173,10 @@ the structure of the above example.
 The example command added in the example is then available as usual when using
 the CLI:
 
-```
+```shell
 $ evrythng greet Charles
+```
+```
 Hello there, Charles!
 ```
 
@@ -164,7 +214,7 @@ A command is implemented by adding to `commands.js`, and must have the following
 exported structure:
 
 ```js
-{
+module.exports = {
   about,
   firstArg,
   operations,
@@ -197,13 +247,13 @@ for the module's `operations` is printed to help guide the user.
 
 So for example, the `thngs $id read` command:
 
-```
+```shell
 $ evrythng thngs UnghCKffVg8a9KwRwE5C9qBs read
 ```
 would receive all tokens after its own name as `args` when the operation is
 called (i.e: all arguments matched its `pattern`):
 
-```
+```js
 ['UnghCKffVg8a9KwRwE5C9qBs', 'read']
 ```
 
@@ -237,7 +287,51 @@ transparently in this module, so the commands do not have to handle them
 themselves.
 
 
-### Use of Swagger
+### Switches
+
+Any launch parameter that begins with `--` is treated as a switch, and is
+extracted from the launch parameters by `switches.js` in the `apply()` method
+before the remaining `args` are provided to the matched command.
+
+After `apply()` is called, a switch's state in any given invocation can be
+determined as shown below for an example command:
+
+```shell
+$ evrythng thngs list --with-scopes
+```
+
+```js
+const switches = require('../modules/switches');
+
+if (switches.SCOPES) {
+  // --with-scopes was specified
+}
+```
+
+If a switch is configured in `SWITCH_LIST` to be given with a value
+(`hasValue`), it is made available as `value`. This is specified at invocation
+time as follows:
+
+```shell
+$ evrythng thngs list --filter tags=test
+```
+
+The value would be read in code as:
+
+```js
+const filter = switches.FILTER;
+
+if (filter) {
+  console.log(`Filter value was ${filter}`);
+}
+```
+
+```
+Filter value was tags=test
+```
+
+
+### Automatic Payloads
 
 The EVRYTHNG CLI uses the
 [`evrythng-swagger` `npm` module](https://www.npmjs.com/package/evrythng-swagger)
@@ -266,9 +360,10 @@ createThng: {
 The user is then asked to input their values, including sub-objects such as
 `customFields`:
 
-```
+```shell
 $ evrythng thngs create --build
-
+```
+```
 Provide values for each field (or leave blank to skip):
 
 1/7: name (string): My New Thng
@@ -306,55 +401,10 @@ Provide values for each field (or leave blank to skip):
 ```
 
 
-### Switches
-
-Any launch parameter that begins with `--` is treated as a switch, and is
-extracted from the launch parameters by `switches.js` in the `extract()` method
-before the remaining `args` are provided to the matched command.
-
-After `extract()` is called, a switch's state in any given invocation can be
-determined as shown below for an example command:
-
-```
-$ evrythng thngs list --with-scopes
-```
-
-```js
-const switches = require('../modules/switches');
-
-if (switches.SCOPES) {
-  // --with-scopes was specified
-}
-```
-
-If a switch is configured in `SWITCH_LIST` to be given with a value
-(`hasValue`), it is made available as `value`. This is specified at invocation
-time as follows:
-
-```
-$ evrythng thngs list --filter tags=test
-```
-
-The value would be read in code as:
-
-```js
-const filter = switches.FILTER;
-
-if (filter) {
-  console.log(`Filter value was ${filter}`);
-}
-```
-
-```
-Filter value was tags=test
-```
-
-
 ## Development
 
 ### Running Tests
 
-Run `npm test` to run the Mocha tests in the `tests` directory. Ensure `use` an
-appropriate Operator first!
+Run `npm test` to run the Mocha tests in the `tests` directory.
 
 Afterwards, see `reports/index.html` for code coverage results.

@@ -136,6 +136,13 @@ describe('api', () => {
       .get('/access')
       .reply(200, { actor: { id: 'foo' } });
 
+    mockApi()
+      .get('/operators/foo')
+      .reply(200, {
+        id: 'foo',
+        apiKey: '12341234avjUJj429r0GrABM7nMHzjhgk822333337Fzv9e5xLhXbOZTsfFzKENtZcf4k9HjHMrW1234',
+      });
+
     const op = await api.API.getOperatorScope();
 
     expect(op.id).to.equal('foo');

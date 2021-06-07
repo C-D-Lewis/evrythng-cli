@@ -12,5 +12,5 @@ jobs:
           name: 'Setup default configuration and operator'
           command: 'npm run install-mock-config'
       - run:
-          name: 'E2E tests'
+          name: 'Tests'
           command: 'npm test'
