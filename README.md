@@ -1,6 +1,6 @@
 # @chris-lewis/evrythng-cli
 
-> Fork of the official [`evrythng-cli`](https://github.com/evrythng/evrythng-cli).
+Fork of [`evrythng/evrythng-cli`](https://github.com/evrythng/evrythng-cli).
 
 > Requires Node.js version 10 or greater
 
@@ -34,7 +34,7 @@ Manage multiple API keys:
 
 ```shell
 # Add a new Operator API key to save
-$ evrythng operators add personal eu <some key>
+$ evrythng operators add personal us <some key>
 
 # See saved keys
 $ evrythng operators list
@@ -141,7 +141,7 @@ $ evrythng region list
 Or even add your own!
 
 ```shell
-evrythng region add test https://test.example.com
+$ evrythng region add test https://test.example.com
 ```
 
 
@@ -158,7 +158,7 @@ Read a Thng with a unique identifier, for use in a script:
 ```bash
 #!/bin/bash
 
-THNG_ID=$(evrythng thngs gs1:21:test-serial-1 read)
+THNG_ID=$(evrythng thngs gs1:21:test-serial-1 read --field id)
 
 echo $THNG_ID
 ```
@@ -166,7 +166,7 @@ echo $THNG_ID
 Export places to CSV file:
 
 ```shell
-$ evrythng places list --to-csv places.csv --to-page 10 --per-page 100
+$ evrythng places list --to-csv places.csv --per-page 100 --to-page 10
 ```
 
 Create products from a CSV file:
