@@ -4,7 +4,10 @@ const { COMMAND_LIST } = require('../modules/commands');
 const prompt = require('../modules/prompt');
 const cli = require('../functions/cli');
 
+/** Allowed types to REPL with */
 const ALLOWED_TYPES = [
+  'access-policies',
+  'access-tokens',
   'accounts',
   'actions',
   'action-types',
@@ -24,7 +27,13 @@ const validTypes = COMMAND_LIST
   .map(p => (Array.isArray(p) ? p[0] : p))
   .filter(p => ALLOWED_TYPES.includes(p));
 
-const formattedList = arr => arr.map((p, i) => `${arr.length > 9 ? ` ${i}` : i} ${p.id} ${p.name}`).join('\n');
+/**
+ * Format a list of resources.
+ *
+ * @param {Array} arr - Array to format.
+ * @returns {string} List in string format.
+ */
+const toFormattedList = arr => arr.map((p, i) => `${i < 10 ? ` ${i}` : i} ${p.id} ${p.name}`).join('\n');
 
 /**
  * Test if a value is a number.
@@ -38,7 +47,7 @@ const isNumber = (v) => {
   } catch (e) {
     return false;
   }
-}; 
+};
 
 /**
  * Handle the interactive loop
@@ -47,42 +56,80 @@ const repl = async () => {
   let resourceType;
   let selectedResource;
 
-  let running = true;
-  while (running) {
-    console.clear();
+  console.clear();
+  console.log('\nWelcome to the REPL! Begin by choosing a resource type to explore:\n');
+  console.log(`Choose from: \n  - ${validTypes.join('\n  - ')}\n`);
 
+  while (true) {
     // Choose a type
     if (!resourceType) {
       while (!validTypes.includes(resourceType)) {
-        resourceType = await prompt.getValue('type');
+        resourceType = await prompt.getValue('> type');
       }
     }
 
-    // Show list
-    let resources = await cli(`${resourceType} list --silent`);
+    // Show list of that type
+    let page = 0;
+    let filter;
+    let resources = await cli(`${resourceType} list --page ${page} --silent`);
     while (!selectedResource) {
       console.clear();
-      console.log(formattedList(resources));
+      console.log(`\nPage ${page + 1} of ${resourceType}${filter ? ` with filter ${filter}` : ''}:\n`);
+      console.log(toFormattedList(resources));
       console.log();
 
-      let choice;
-      while (!choice) {
-        const input = await prompt.getValue('select');
+      const input = await prompt.getValue('> ID, index, \'more\', or filter');
 
-        // Index from list
-        if (isNumber(input)) {
-
-        }
-
-        // ID
-        if (input.length === 24) {
-
-        }
-
-        // Page? Filter?
-
-        selectedResource = '';
+      // Index from list
+      if (isNumber(input)) {
+        selectedResource = resources[parseInt(input, 10)];
       }
+
+      // ID
+      if (input.length === 24) {
+        selectedResource = resources.find(p => p.id === input);
+      }
+
+      // Next?
+      if (input === 'more') {
+        page += 1;
+        resources = await cli(`${resourceType} list --page ${page} --silent`);
+
+        console.clear();
+        console.log(`\nPage ${page + 1} of ${resourceType}:\n`);
+        console.log(toFormattedList(resources));
+        console.log();
+      }
+
+      // Filter
+      try {
+        filter = input;
+        resources = await cli(`${resourceType} list --page ${page} --filter ${filter} --silent`);
+      } catch (e) {
+        filter = '';
+      }
+    }
+
+    // Display selected resource
+    console.clear();
+    console.log('\nSelected resource:\n');
+    console.log(JSON.stringify(selectedResource, null, 2));
+    console.log();
+
+    let operation;
+    while (!operation) {
+      const input = await prompt.getValue('> \'update $field $newValue\', \'delete\', or \'back\'');
+
+      // Back
+      if (input === 'back') {
+        operation = true;
+        selectedResource = null;
+        filter = null;
+      }
+
+      // Update field
+
+      // Delete
     }
   }
 };

@@ -151,7 +151,8 @@ const extractUrlFromLink = (link) => {
  * @returns {object} Last fetch response object.
  */
 const goToPage = async (res, endPage) => {
-  for (let page = 0; page <= endPage; page += 1) {
+  let page = 0;
+  while (page < endPage) {
     const link = res.headers.get('link');
     if (!link) {
       logger.info('No more pages. Returning last found page.');
@@ -164,10 +165,11 @@ const goToPage = async (res, endPage) => {
       fullResponse,
       url,
     });
-    if (page === endPage - 1) return res;
+    
+    page += 1;
   }
 
-  return res;
+  return res.json();
 };
 
 /**
@@ -200,23 +202,17 @@ const getMorePages = async (res, max) => {
 };
 
 const printResponse = async (res) => {
-  if (!res) {
-    return null;
-  }
-  if (!res.data) {
-    return res;
-  }
-
-  // Silent switch - just return data
-  if (switches.SILENT) {
-    return res.data;
-  }
+  if (!res) return null;
+  if (!res.data) return res;
 
   // Wait until page reached
   const page = switches.PAGE;
-  if (page) {
-    res = await goToPage(res, parseInt(page, 10));
+  if (page && page !== '0') {
+    res.data = await goToPage(res, parseInt(page, 10));
   }
+
+  // Silent switch - just return data
+  if (switches.SILENT) return res.data;
 
   // Get all pages and update res.data
   const csvFileName = switches.TO_CSV;
@@ -227,6 +223,7 @@ const printResponse = async (res) => {
       throw new Error('--to-page is only available when using --to-csv or --to-json');
     }
 
+    // Update response data
     res.data = await getMorePages(res, toPage);
   }
 
