@@ -9,7 +9,7 @@ const fs = require('fs');
 /** Default configuration file if none exists */
 const DEFAULT_CONFIG = {
   using: '',
-  operators: {},
+  keys: {},
   options: {
     errorDetail: false,
     noConfirm: true,
@@ -24,12 +24,12 @@ const DEFAULT_CONFIG = {
   },
 };
 
+/** Config schema */
 const CONFIG_SCHEMA = {
-  additionalProperties: false,
-  required: ['using', 'operators', 'options', 'regions'],
+  required: ['using', 'options', 'regions'],
   properties: {
     using: { type: 'string' },
-    operators: {
+    keys: {
       patternProperties: {
         '(.*)': {
           additionalProperties: false,
@@ -67,12 +67,19 @@ const CONFIG_SCHEMA = {
   },
 };
 
+/** Default perPage value to apply */
 const DEFAULT_DEFAULT_PER_PAGE = 30;
 
-const PATH = `${require('os').homedir()}/.evrythng-cli-config`;
+/** Config file path */
+const CONFIG_PATH = `${require('os').homedir()}/.evrythng-cli-config`;
 
 let data;
 
+/**
+ * Validate the config.
+ *
+ * @param {object} input - Config object to validate.
+ */
 const validateConfig = (input) => {
   const results = validate(input, CONFIG_SCHEMA);
   if (results.errors && results.errors.length) {
@@ -80,38 +87,67 @@ const validateConfig = (input) => {
   }
 };
 
-const write = () => fs.writeFileSync(PATH, JSON.stringify(data, null, 2), 'utf8');
+/**
+ * Write the config to file.
+ */
+const write = () => fs.writeFileSync(CONFIG_PATH, JSON.stringify(data, null, 2), 'utf8');
 
+/**
+ * Migrate aspects of the config between versions.
+ *
+ * @param {object} input - Config to migrate.
+ */
 const migrateConfig = (input) => {
   // v1.1.0 - new defaultPerPage option
   if (!input.options.defaultPerPage) {
     input.options.defaultPerPage = DEFAULT_DEFAULT_PER_PAGE;
   }
 
+  // 1.14.0 - operators renamed to keys
+  if (input.operators) {
+    input.keys = input.operators;
+    delete input.operators;
+  }
+
   write();
 };
 
+/**
+ * Load config from file.
+ */
 const load = () => {
-  if (!fs.existsSync(PATH)) {
+  if (!fs.existsSync(CONFIG_PATH)) {
     data = DEFAULT_CONFIG;
     write();
     return;
   }
 
-  data = JSON.parse(fs.readFileSync(PATH, 'utf8'));
+  data = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
   migrateConfig(data);
   validateConfig(data);
 };
 
+/**
+ * Get data from the config.
+ *
+ * @param {string} key - Name of item to get.
+ * @returns {*} Data if it exists.
+ */
 const get = key => data[key];
 
+/**
+ * Set data to the config.
+ *
+ * @param {string} key - Name of item to get.
+ * @param {*} value - Data to store.
+ */
 const set = (key, value) => {
   data[key] = value;
   write();
 };
 
 module.exports = {
-  PATH,
+  CONFIG_PATH,
   get,
   set,
   validateConfig,

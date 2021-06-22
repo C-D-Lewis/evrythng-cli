@@ -88,11 +88,11 @@ describe('api', () => {
     expect(config.set).to.be.a('function');
   });
 
-  it('should provide access to operators', () => {
+  it('should provide access to keys', () => {
     const config = api.API.getConfig();
 
-    const operators = config.get('operators');
-    expect(operators).to.be.an('object');
+    const keys = config.get('keys');
+    expect(keys).to.be.an('object');
   });
 
   it('should provide access to selected operator name', () => {
@@ -130,7 +130,7 @@ describe('api', () => {
     expect(() => requireVersion(futureVersion)).to.throw();
   });
 
-  it('should provide access to the current Operator scope', async () => {
+  it('should provide access to the current SDK scope', async () => {
     mockApi()
       .persist()
       .get('/access')
@@ -143,9 +143,9 @@ describe('api', () => {
         apiKey: '12341234avjUJj429r0GrABM7nMHzjhgk822333337Fzv9e5xLhXbOZTsfFzKENtZcf4k9HjHMrW1234',
       });
 
-    const op = await api.API.getOperatorScope();
+    const scope = await api.API.getScope();
 
-    expect(op.id).to.equal('foo');
-    expect(op.apiKey).to.have.length(80);
+    expect(scope.id).to.equal('foo');
+    expect(scope.apiKey).to.have.length(80);
   });
 });

@@ -13,11 +13,11 @@ const logger = require('../modules/logger');
 
 /** List of CLI examples. */
 const EXAMPLES = [{
-  command: 'operators list',
-  about: 'See all Operators stored',
+  command: 'keys list',
+  about: 'See all keys stored',
 }, {
-  command: 'operators add prod us AGiWrH5OteA4aHiM...',
-  about: 'Add a new Operator to the US region',
+  command: 'keys add prod us AGiWrH5OteA4aHiM...',
+  about: 'Store a new key for the US region',
 }, {
   command: 'thngs list',
   about: 'Read a page of Thngs',
@@ -117,6 +117,6 @@ module.exports = () => {
   }
 
   const using = config.get('using');
-  const { region } = config.get('operators')[using];
-  logger.info(`\n\nUsing Operator '${using}' (region: ${region})\n`);
+  const { region } = config.get('keys')[using];
+  logger.info(`\n\nUsing key '${using}' (region: ${region})\n`);
 };

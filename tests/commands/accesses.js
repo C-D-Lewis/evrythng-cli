@@ -14,7 +14,7 @@ describe('accesses', () => {
 
   it('should make correct request for \'accesses create $payload\'', async () => {
     const payload = JSON.stringify({
-      email: `user2@example.com`,
+      email: 'user2@example.com',
       role: 'base_app_user',
     });
     mockApi()

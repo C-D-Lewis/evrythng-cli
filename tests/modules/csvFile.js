@@ -146,14 +146,14 @@ describe('csvFile', () => {
   });
 
   it('should encode a simple JSON object', () => {
-    const obj = { foo: 'bar', 'baz': 'thng' };
+    const obj = { foo: 'bar', baz: 'thng' };
     const expected = '{foo:bar|baz:thng}';
     expect(csvFile.encodeObject(obj)).to.equal(expected);    
   });
 
   it('should decode a simple JSON object encoded string', () => {
     const objStr = '{foo:bar|baz:thng}';
-    const expected = { foo: 'bar', 'baz': 'thng' };
+    const expected = { foo: 'bar', baz: 'thng' };
     const result = csvFile.decodeObject(objStr);
     expect(isEqual(result, expected)).to.equal(true);    
   });

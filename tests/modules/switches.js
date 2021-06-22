@@ -8,7 +8,6 @@ const chaiAsPromised = require('chai-as-promised');
 const fs = require('fs');
 const { ID, API_KEY, mockApi } = require('../util');
 const cli = require('../../src/functions/cli');
-const operator = require('../../src/commands/operator');
 const switches = require('../../src/modules/switches');
 
 const { expect } = chai;
@@ -132,7 +131,7 @@ describe('switches', () => {
     mockApi()
       .get('/thngs?perPage=30')
       .reply(200, []);
-    
+
     await cli(`thngs list --to-page 2 --to-csv ${CSV_PATH}`);
     switches.TO_PAGE = false;
     switches.TO_CSV = false;

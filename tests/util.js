@@ -52,11 +52,11 @@ const createAppUser = async (name) => {
  * Prepare nock for an API request.
  *
  * @param {boolean} allowUnmocked - Allow nock to make unmocked requests to the API.
- * @returns {Object} nock scope object.
+ * @returns {object} nock scope object.
  */
 const mockApi = (allowUnmocked = false) => {
   const regions = config.get('regions');
-  const { region } = config.get('operators')[config.get('using')];
+  const { region } = config.get('keys')[config.get('using')];
   return nock(regions[region], { allowUnmocked });
 };
 

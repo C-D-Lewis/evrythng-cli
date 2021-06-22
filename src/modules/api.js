@@ -3,14 +3,14 @@
  * All rights reserved. Use of this material is subject to license.
  */
 
-const evrythng = require('evrythng');
 const fs = require('fs');
 const semver = require('semver');
 const { validate } = require('./util');
 const commands = require('./commands');
 const config = require('./config');
-const operator = require('../commands/operator');
+const key = require('../commands/key');
 const switches = require('./switches');
+
 const { version } = require('../../package.json');
 
 const COMMAND_SCHEMA = {
@@ -91,15 +91,11 @@ const API = {
    */
   runCommand: async (args) => {
     const command = commands.identify(args);
-    if (!command) {
-      throw new Error(`Command '${args.join(' ')}' was not recognised.`);
-    }
+    if (!command) throw new Error(`Command '${args.join(' ')}' was not recognised.`);
 
-    operator.applyRegion();
+    key.applyRegion();
     const res = await command.execute(args.slice(1));
-    if (!res) {
-      return;
-    }
+    if (!res) return;
 
     // Pass the data back for convenience, not the full fetch() response object
     return res.data ? res.data : res;
@@ -118,21 +114,23 @@ const API = {
   },
 
   /**
-   * Convenience method to get the current Operator as an SDK scope.
+   * Convenience method to get the current key as an SDK scope.
    * The region is automatically applied.
    *
-   * @returns {object} Operator scope for the currently selected operator.
+   * @returns {object} Operator scope for the currently selected key.
    */
-  getOperatorScope: async () => {
-    operator.applyRegion();
-    const op = new evrythng.Operator(operator.getKey());
-    await op.init();
-    return op;
+  getScope: async () => {
+    key.applyRegion();
+
+    const scope = await key.getSdkScope(key.getKey());
+    await scope.init();
+    return scope;
   },
 };
 
 const loadPlugin = (moduleName) => {
   try {
+    // eslint-disable-next-line import/no-dynamic-require
     require(`${NODE_MODULES_PATH}/${moduleName}`)(API);
   } catch (e) {
     throw new Error(`Failed to load plugin: ${moduleName} (${e.stack})`);

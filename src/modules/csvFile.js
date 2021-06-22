@@ -1,13 +1,6 @@
-/**
- * (c) Copyright Reserved EVRYTHNG Limited 2018.
- * All rights reserved. Use of this material is subject to license.
- */
-
-const { omit } = require('lodash');
 const fs = require('fs');
 const neatCsv = require('neat-csv');
 const logger = require('./logger');
-const operator = require('../commands/operator');
 const switches = require('./switches');
 const util = require('./util');
 
@@ -45,7 +38,7 @@ const PAIR_SEPARATOR = ':';
 /**
  * Get de-duplicated list of object keys of a specific type (denoted by prefix)
  *
- * @param {Object[]} arr - Array of objects to search for keys.
+ * @param {Array<object>} arr - Array of objects to search for keys.
  * @param {string} prefix - Optional prefix when searching a sub-object.
  * @returns {string[]} Array of keys found in the objects.
  */
@@ -66,8 +59,8 @@ const getAllKeys = (arr, prefix) => {
  * Get all applicable column headers for all objects.
  * Object, 'address', 'customFields', 'identifiers', and 'properties' are supported as types.
  *
- * @param {Object[]} arr - Array of objects to search for keys.
- * @returns {Object} Object containing a list of each kind of keys
+ * @param {Array<object>} arr - Array of objects to search for keys.
+ * @returns {object} Object containing a list of each kind of keys
  */
 const getColumnHeaders = (arr) => {
   const object = getAllKeys(arr);
@@ -100,7 +93,7 @@ const escapeCommas = (value) => {
 /**
  * Encode a single level object into a CSV compatible format.
  *
- * @param {Object} obj - The object to encode.
+ * @param {object} obj - The object to encode.
  * @returns {string} The encoded form.
  */
 const encodeObject = (obj) => {
@@ -112,7 +105,7 @@ const encodeObject = (obj) => {
  * Decode a single level object string from a CSV compatible format.
  *
  * @param {string} objStr - The object string to decode.
- * @returns {Object} The decoded object.
+ * @returns {object} The decoded object.
  */
 const decodeObject = objStr => objStr
   .slice(1, objStr.length - 1)
@@ -154,7 +147,7 @@ const encodeEmptyCell = res => res.concat('');
  *
  * @param {string[]} res - Array of CSV cells so far.
  * @param {string} key - Object key to use.
- * @param {Object} value - Object to encode and add to the row.
+ * @param {object} value - Object to encode and add to the row.
  * @return {string[]} The augmented array of CSV cells.
  */
 const encodeSubObject = (res, key, value) => {
@@ -165,7 +158,7 @@ const encodeSubObject = (res, key, value) => {
 /**
  * Create row of cell values for each applicable key, else add empty cell (,).
  *
- * @param {Object} obj - The object to convert to a row.
+ * @param {object} obj - The object to convert to a row.
  * @param {string[]} objKeys - Array of object keys to use.
  * @returns {string[]} Array of cell values for this row.
  */
@@ -202,7 +195,7 @@ const objectToCells = (obj, objKeys) => {
 /**
  * Create CSV data from input object array.
  *
- * @param {Object[]} arr - Array of input objects to convert.
+ * @param {Array<object>} arr - Array of input objects to convert.
  * @returns {string[]} Array of CSV rows as strings.
  */
 const createCsvData = async (arr) => {
@@ -229,7 +222,7 @@ const createCsvData = async (arr) => {
 /**
  * Assign a prefixed property to an object property
  *
- * @param {Object} obj - The object to modify.
+ * @param {object} obj - The object to modify.
  * @param {string} objKey - The object property to modify.
  * @param {string} fullKey - The key of the property to assign.
  * @param {string} value - The value to assign.
@@ -261,7 +254,7 @@ const preserveType = (value) => {
 /**
  * Decode an cell encoded as an array of values.
  *
- * @param {Object} res - The object being constructed.
+ * @param {object} res - The object being constructed.
  * @param {string} key - Result object key.
  * @param {string} value - Array to be decoded.
  */
@@ -276,7 +269,7 @@ const decodeArray = (res, key, value) => {
 /**
  * Decode an cell encoded as a lat/lon pair to GeoJSON object.
  *
- * @param {Object} res - The object being constructed.
+ * @param {object} res - The object being constructed.
  * @param {string} key - Result object key.
  * @param {string} value - Coordinate pair to be decoded.
  */
@@ -294,8 +287,8 @@ const decodeGeoJson = (res, key, value) => {
  * Convert a CSV row object to an EVRYTHNG resource.
  * Some special decoding and filtering is still required.
  *
- * @param {Object} row - The row to convert.
- * @returns {Object} - An EVRYTHNG-compatible object representation of this CSV row.
+ * @param {object} row - The row to convert.
+ * @returns {object} - An EVRYTHNG-compatible object representation of this CSV row.
  */
 const rowToObject = row => Object.keys(row)
   .reduce((res, key) => {

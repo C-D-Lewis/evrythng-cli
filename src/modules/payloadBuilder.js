@@ -9,7 +9,7 @@ const jsonSchemaParser = require('json-schema-ref-parser');
 const config = require('./config');
 const indent = require('../functions/indent');
 const logger = require('./logger');
-const operator = require('../commands/operator');
+const key = require('../commands/key');
 const prompt = require('./prompt');
 
 
@@ -34,8 +34,8 @@ const POPULATING_TASK_BASE = {
 const FILE_FORMATS = ['CSV', 'ZIP'];
 
 const apiRequest = (url) => {
-  const apiKey = operator.resolveKey(config.get('using'));
-  return evrythng.api({ url, apiKey: apiKey });
+  const apiKey = key.resolveKey(config.get('using'));
+  return evrythng.api({ url, apiKey });
 };
 
 const getShortDomains = async () => {
@@ -90,9 +90,9 @@ const buildListBased = async (task) => {
 };
 
 const buildCustomIdentifier = async () => {
-  const key = await prompt.getValue('Custom identifier key (string)');
+  const customKey = await prompt.getValue('Custom identifier key (string)');
   const values = await prompt.getArray('identifier values');
-  return { key, values };
+  return { key: customKey, values };
 };
 
 const buildIdentifiersListBased = async (task) => {
@@ -180,45 +180,45 @@ const getKeyName = async () => prompt.getValue(indent('key', 2));
 const buildCustomObject = async () => {
   const result = {};
 
-  let key = await getKeyName();
-  while (key) {
-    result[key] = await prompt.getValue(indent('value', 2));
-    key = await getKeyName();
+  let keyName = await getKeyName();
+  while (keyName) {
+    result[keyName] = await prompt.getValue(indent('value', 2));
+    keyName = await getKeyName();
   }
 
   return result;
 };
 
 const buildDefObject = async (opts) => {
-  const { key, target, index, total, propertyDef } = opts;
+  const { key: keyName, target, index, total, propertyDef } = opts;
 
   // User-definable fields are not documented, present free-form
   const freeformObjects = ['customFields', 'identifiers'];
-  if (freeformObjects.includes(key)) {
-    logger.info(`${index + 1}/${total}: ${key} (object, leave 'key' blank to finish)`);
-    target[key] = await buildCustomObject();
+  if (freeformObjects.includes(keyName)) {
+    logger.info(`${index + 1}/${total}: ${keyName} (object, leave 'keyName' blank to finish)`);
+    target[keyName] = await buildCustomObject();
     return;
   }
 
   // Recurse
-  target[key] = {};
-  await buildObject(target[key], propertyDef.properties, key);
+  target[keyName] = {};
+  await buildObject(target[keyName], propertyDef.properties, keyName);
 };
 
 const buildDefProperty = async (opts) => {
-  const { index, total, target, key, propertyDef } = opts;
+  const { index, total, target, key: keyName, propertyDef } = opts;
 
   // Fields with only one allowed value
-  if (HARDCODE_MAP[key]) {
-    target[key] = HARDCODE_MAP[key];
-    logger.info(`${index + 1}/${total}: ${key} is always ${JSON.stringify(HARDCODE_MAP[key])}`);
+  if (HARDCODE_MAP[keyName]) {
+    target[keyName] = HARDCODE_MAP[keyName];
+    logger.info(`${index + 1}/${total}: ${keyName} is always ${JSON.stringify(HARDCODE_MAP[keyName])}`);
     return;
   }
 
   // Build sub-object
   // TODO handle sub-object properties
   if (propertyDef.type === 'object') {
-    await buildDefObject({ key, target, index, total, propertyDef });
+    await buildDefObject({ key: keyName, target, index, total, propertyDef });
     return;
   }
 
@@ -232,7 +232,7 @@ const buildDefProperty = async (opts) => {
   }
 
   // Get a simple value
-  const input = await prompt.getValue(`${index + 1}/${total}: ${key} (${typeStr})`);
+  const input = await prompt.getValue(`${index + 1}/${total}: ${keyName} (${typeStr})`);
   if (!input) {
     return;
   }
@@ -241,18 +241,18 @@ const buildDefProperty = async (opts) => {
   // TODO handle arrays of non-strings?
   if (propertyDef.type === 'array') {
     if (propertyDef.items.type === 'string') {
-      target[key] = input.split(',');
+      target[keyName] = input.split(',');
       return;
     }
 
     if (['integer', 'number'].includes(propertyDef.items.type)) {
-      target[key] = input.split(',').map(parseInt);
+      target[keyName] = input.split(',').map(parseInt);
       return;
     }
   }
 
   // Simple value
-  target[key] = input;
+  target[keyName] = input;
 };
 
 const filteredPropertyKeys = properties => Object.keys(properties)
@@ -266,13 +266,13 @@ const buildObject = async (properties, name) => {
 
   const payload = {};
   for (let index = 0; index < propertyKeys.length; index += 1) {
-    const key = propertyKeys[index];
+    const keyName = propertyKeys[index];
     await buildDefProperty({
-      key,
+      key: keyName,
       index,
       total: propertyKeys.length,
       target: payload,
-      propertyDef: properties[key],
+      propertyDef: properties[keyName],
     });
   }
 

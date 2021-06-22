@@ -4,13 +4,13 @@
  */
 
 const evrythng = require('evrythng');
-const operator = require('../commands/operator');
+const key = require('../commands/key');
 
 const expandTimestamp = async timestamp => Promise.resolve(new Date(timestamp).toLocaleString());
 
 const expandResourceId = (type, id) => evrythng.api({
   url: `/${type}s/${id}`,
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
 });
 
 const EXPANSION_MAP = {

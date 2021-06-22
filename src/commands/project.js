@@ -7,7 +7,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const http = require('../modules/http');
 const logger = require('../modules/logger');
-const operator = require('./operator');
+const key = require('./key');
 const util = require('../modules/util');
 
 /** List of allowed Reactor script file types */
@@ -57,9 +57,9 @@ const uploadReactorFiles = async (projectId, applicationId, scriptPath, manifest
  */
 const uploadBundle = (projectId, applicationId, filePath) => {
   const uploadCmd = `curl -i -s \
-    -H "Authorization:${operator.getKey()}" \
+    -H "Authorization:${key.getKey()}" \
     -H "Content-Type:multipart/form-data;" \
-    -X PUT "${operator.getRegionUrl()}/projects/${projectId}/applications/${applicationId}/reactor/script" \
+    -X PUT "${key.getRegionUrl()}/projects/${projectId}/applications/${applicationId}/reactor/script" \
     -F file=@"${filePath}"`;
   const stdout = execSync(uploadCmd).toString();
   logger.info(`\n${stdout.split('\n').pop()}`);

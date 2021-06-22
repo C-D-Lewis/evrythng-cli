@@ -9,7 +9,7 @@ const evrythng = require('evrythng');
 const fs = require('fs');
 const indent = require('../functions/indent');
 const logger = require('./logger');
-const operator = require('../commands/operator');
+const key = require('../commands/key');
 const payloadBuilder = require('./payloadBuilder');
 const switches = require('./switches');
 
@@ -109,9 +109,7 @@ const validate = (instance, schema) => {
  * @returns {Promise} A Promise that resolves when all items have been processed.
  */
 const nextTask = async (items) => {
-  if (!items.length) {
-    return;
-  }
+  if (!items.length) return;
 
   return items.splice(0, 1)[0]().then(() => nextTask(items));
 };
@@ -119,11 +117,11 @@ const nextTask = async (items) => {
 /**
  * Create request options for creating a resource redirection.
  *
- * @param {Object} scope - The actor scope.
+ * @param {object} scope - The actor scope.
  * @param {string} evrythngId - The resource ID.
  * @param {string} type - The resource type.
  * @param {string} defaultRedirectUrl - The redirection URL.
- * @returns {Object} The complete request options for evrythng.api().
+ * @returns {object} The complete request options for evrythng.api().
  */
 const createRedirectionOptions = (scope, evrythngId, type, defaultRedirectUrl) => ({
   apiUrl: `https://${switches.WITH_REDIRECTIONS}`,
@@ -137,7 +135,7 @@ const createRedirectionOptions = (scope, evrythngId, type, defaultRedirectUrl) =
 /**
  * Create a redirection for a resource. The URL must include a suitable placeholder.
  *
- * @param {Object} scope - The SDK scope making the request.
+ * @param {object} scope - The SDK scope making the request.
  * @param {string} evrythngId - The resource ID.
  * @param {string} type - The resource type.
  * @param {string} defaultRedirectUrl - The redirection URL.
@@ -152,16 +150,16 @@ const createRedirection = async (scope, evrythngId, type, defaultRedirectUrl) =>
     const res = await evrythng.api(options);
     logger.info(`  Created redirection: ${res.defaultRedirectUrl}`);
   } catch (e) {
-    logger.error(`Error: ${e.errors ? e.errors[0]: e.message}`);
+    logger.error(`Error: ${e.errors ? e.errors[0] : e.message}`);
   }
 };
 
 /**
  * Create a single resource from a data object.
  *
- * @param {Object} scope - evrythng.js Operator scope.
- * @param {Object} resource - The object to create as a resource.
- * @param {string} type - The resource type, as evrythng.js Operator member name.
+ * @param {object} scope - evrythng.js scope.
+ * @param {object} resource - The object to create as a resource.
+ * @param {string} type - The resource type, as evrythng.js scope member name.
  */
 const createResource = async (scope, resource, type) => {
   const params = {};
@@ -201,7 +199,7 @@ const readFile = async (type, path, getItems, transform) => {
   }
 
   const items = await getItems(path);
-  const scope = new evrythng.Operator(operator.getKey());
+  const scope = await key.getSdkScope(key.getKey());
   await nextTask(items.map(item => async () => {
     let payload = omit(item, ['redirection'].concat(READ_ONLY_KEYS));
     if (transform) {
@@ -229,7 +227,7 @@ const readRedirections = async (items, shortDomain) => {
       const [redirection] = await evrythng.api({
         apiUrl: `https://${shortDomain}`,
         url: `/redirections?evrythngId=${item.id}`,
-        apiKey: operator.getKey(),
+        apiKey: key.getKey(),
       });
 
       if (redirection) {
@@ -258,7 +256,7 @@ const addResourceRedirections = async (items) => {
     logger.info(`Reading ${items.length} redirections...`);
     await readRedirections(items, shortDomain);
   }
-}
+};
 
 module.exports = {
   READ_ONLY_KEYS,

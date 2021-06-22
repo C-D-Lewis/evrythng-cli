@@ -11,7 +11,7 @@ const getAvailableRegions = () => Object.keys(config.get('regions'));
 const checkRegionExists = (name) => {
   const items = getAvailableRegions();
   if (!items.includes(name)) {
-    throw new Error(`\nRegion '${name}' not found in ${config.PATH}.`);
+    throw new Error(`\nRegion '${name}' not found in ${config.CONFIG_PATH}.`);
   }
 };
 
@@ -45,15 +45,18 @@ const addRegion = ([, name, apiUrl]) => {
   return regions;
 };
 
+/**
+ * Remove a region from the config.
+ *
+ * @param {Array<string>} args - Program args.
+ */
 const removeRegion = ([name]) => {
   checkRegionExists(name);
 
   // Do not remove while in use
-  const operators = config.get('operators');
-  const inUse = Object.keys(operators).find(item => operators[item].region === name);
-  if (inUse) {
-    throw new Error('Cannot delete a region while an Operator is using it.');
-  }
+  const keys = config.get('keys');
+  const inUse = Object.keys(keys).find(item => keys[item].region === name);
+  if (inUse) throw new Error('Cannot delete a region while a stored key is using it.');
 
   const regions = config.get('regions');
   delete regions[name];

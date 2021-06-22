@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const { ctx } = require('./util');
 const config = require('../src/modules/config');
-const operator = require('../src/commands/operator');
+const key = require('../src/commands/key');
 
 describe('CLI', () => {
   before(async () => {
@@ -14,7 +14,7 @@ describe('CLI', () => {
     options.logLevel = 'error';
     config.set('options', options);
 
-    operator.applyRegion();
+    key.applyRegion();
   });
 
   after(async () => {
@@ -37,7 +37,7 @@ describe('CLI', () => {
   require('./commands/batch');
   require('./commands/collection');
   require('./commands/file');
-  require('./commands/operator');
+  require('./commands/key');
   require('./commands/option');
   require('./commands/place');
   require('./commands/product');

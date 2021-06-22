@@ -11,7 +11,7 @@ const csvFile = require('./csvFile');
 const expand = require('../functions/expand');
 const jsonFile = require('./jsonFile');
 const logger = require('./logger');
-const operator = require('../commands/operator');
+const key = require('../commands/key');
 const switches = require('./switches');
 const util = require('./util');
 
@@ -50,7 +50,7 @@ const isListRequest = (url) => {
  *
  * @param {string} method - The request method.
  * @param {string} url - The request url.
- * @returns {Object} Object containing all applicable query param keys and values.
+ * @returns {object} Object containing all applicable query param keys and values.
  */
 const buildQueryParams = (method, url) => {
   const { defaultPerPage } = config.get('options');
@@ -152,6 +152,7 @@ const extractUrlFromLink = (link) => {
  */
 const goToPage = async (res, endPage) => {
   let page = 0;
+
   while (page < endPage) {
     const link = res.headers.get('link');
     if (!link) {
@@ -161,11 +162,11 @@ const goToPage = async (res, endPage) => {
 
     const url = extractUrlFromLink(link);
     res = await evrythng.api({
-      apiKey: operator.getKey(),
+      apiKey: key.getKey(),
       fullResponse,
       url,
     });
-    
+
     page += 1;
   }
 
@@ -176,19 +177,19 @@ const goToPage = async (res, endPage) => {
  * Fetch more pages until the required number is accumulated.
  *
  * @param {object} res - Fetch response object.
- * @param {string} max - Maximum pages to get.
+ * @param {string} maxStr - Maximum pages to get.
  * @returns {Array<object>} Array of ALL items fetched.
  */
-const getMorePages = async (res, max) => {
-  max = parseInt(max, 10);
-
+const getMorePages = async (res, maxStr) => {
+  const max = parseInt(maxStr, 10);
   const items = [...res.data];
+
   for (let page = 1; page < max; page += 1) {
     const link = res.headers.get('link');
     if (!link) break;
 
     res = await evrythng.api({
-      apiKey: operator.getKey(),
+      apiKey: key.getKey(),
       fullResponse,
       url: extractUrlFromLink(link),
     });
@@ -201,6 +202,12 @@ const getMorePages = async (res, max) => {
   return items;
 };
 
+/**
+ * Print the API response.
+ *
+ * @param {object} res - Response object.
+ * @returns {Promise<object>}
+ */
 const printResponse = async (res) => {
   if (!res) return null;
   if (!res.data) return res;
@@ -279,7 +286,7 @@ const printResponse = async (res) => {
 /**
  * Make an EVRYTHNG.js request.
  *
- * @param {Object} options - The request options.
+ * @param {object} options - The request options.
  * @returns {Promise} A promise that resolves to the result of the request
  */
 const sendRequest = options => evrythng.api(options).then((res) => {
@@ -293,9 +300,7 @@ const sendRequest = options => evrythng.api(options).then((res) => {
       return res;
     }).catch((err) => {
       // Some POST and PUT don't return a body, but that's OK
-      if (!err.message && err.message.includes('invalid json response body')) {
-        throw err;
-      }
+      if (!err.message && err.message.includes('invalid json response body')) throw err;
     });
   }
 
@@ -337,7 +342,7 @@ const createApiRequest = async (options) => {
  * @returns {Promise}
  */
 const api = async options => createApiRequest(Object.assign(options, {
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
 }))
   .then(module.exports.sendRequest)
   .then(printResponse);
@@ -352,7 +357,7 @@ const api = async options => createApiRequest(Object.assign(options, {
 const post = async (url, data) => api({
   url: `${url}${buildParamString('post', url)}`,
   method: 'POST',
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
   data,
 });
 
@@ -365,10 +370,10 @@ const post = async (url, data) => api({
  */
 const get = async (url, silent = false) => createApiRequest({
   url: `${url}${buildParamString('get', url)}`,
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
 })
   .then(module.exports.sendRequest)
-  .then(res => silent ? res : printResponse(res));
+  .then(res => (silent ? res : printResponse(res)));
 
 /**
  * Perform a PUT request.
@@ -380,7 +385,7 @@ const get = async (url, silent = false) => createApiRequest({
 const put = async (url, data) => api({
   url: `${url}${buildParamString('put', url)}`,
   method: 'PUT',
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
   data,
 });
 
@@ -389,10 +394,10 @@ const put = async (url, data) => api({
  *
  * @param {string} url - URL of the resource to delete.
  */
- const deleteMethod = async url => api({
+const deleteMethod = async url => api({
   url,
   method: 'DELETE',
-  apiKey: operator.getKey(),
+  apiKey: key.getKey(),
 })
   .then((res) => {
     logger.info(`\nDeleted ${url}`);

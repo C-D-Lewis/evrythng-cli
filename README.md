@@ -33,14 +33,14 @@ $ evrythng thngs
 Manage multiple API keys:
 
 ```shell
-# Add a new Operator API key to save
-$ evrythng operators add personal us <some key>
+# Add a new API key to saved config
+$ evrythng keys add personal us <some key>
 
 # See saved keys
-$ evrythng operators list
+$ evrythng keys list
 
 # or use in scripts
-$ export OPERATOR_API_KEY=$(evrythng operators personal read)
+$ export OPERATOR_API_KEY=$(evrythng keys personal read)
 ```
 
 
@@ -52,14 +52,14 @@ Install the `npm` module globally as a command:
 $ npm i -g @chris-lewis/evrythng-cli
 ```
 
-Then add at least one Operator using an Operator API Key available
+Then add at least one API key using an Operator API Key available
 from the 'Account Settings' page of the
 [EVRYTHNG Dashboard](https://dashboard.evrythng.com):
 
 > This is automatically requested when first run.
 
 ```shell
-$ evrythng operators add $name $region $apiKey
+$ evrythng keys add $name $region $apiKey
 ```
 
 For example:
@@ -67,7 +67,7 @@ For example:
 > Key truncated for brevity.
 
 ```shell
-$ evrythng operators add prod us AGiWrH5OteA4aHiM...
+$ evrythng keys add prod us AGiWrH5OteA4aHiM...
 ```
 
 
@@ -100,14 +100,14 @@ $ evrythng t l
 
 Authentication is provided in two ways:
 
-1. Using the `operators` command to store Operator API Keys associated with
-   different accounts and regions in the user's `~/.evrythng-cli-config` file.
-   Any request that can be done as an Operator is done with the currently
-   selected Operator.
+1. Using the `keys` command to store API Keys (Operator or Access Token)
+   associated with different accounts and regions in the user's
+   `~/.evrythng-cli-config` file. Request will be sent with the currently
+   selected key.
 
    ```shell
-   # Select an Operator
-   evrythng operators personal-eu use
+   # Select a stored key
+   evrythng keys personal-eu use
 
    # Use in a command
    evrythng places list --per-page 10
@@ -116,7 +116,7 @@ Authentication is provided in two ways:
 2. Using the `--api-key` switch to either override the currently selected
    operator's API key, or provide a required key (such as the Application API
    Key when creating Application Users). An existing operator's name chosen
-   when using `operators add` is also accepted.
+   when using `keys add` is also accepted.
 
    > Key truncated for brevity.
    
@@ -128,10 +128,10 @@ Authentication is provided in two ways:
    evrythng accounts list --api-key personal-eu
    ```
 
-> You must add at least one Operator before you can begin using the CLI. You'll
+> You must add at least one key before you can begin using the CLI. You'll
 > be guided the first time if you forget.
 
-All Operators refer to a 'region' - an API URL where they exist in the EVRYTHNG
+All API keys refer to a 'region' - an API URL where they exist in the EVRYTHNG
 Platform. See all available regions:
 
 ```shell
@@ -263,8 +263,8 @@ following usable methods and data:
 * `version` - String of the current running `evrythng-cli` version.
 * `requireVersion()` - Require a semver compatible version of `evrythng-cli` to
   load the plugin.
-* `getOperatorScope()` - Obtain an evrythng.js Operator scope for the currently
-  selected operator.
+* `getScope()` - Obtain an evrythng.js Operator or Access Token scope for the
+  currently selected key.
 
 
 ## Architecture
