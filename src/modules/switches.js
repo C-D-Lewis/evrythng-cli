@@ -39,12 +39,6 @@ const SWITCH_LIST = [
     constant: 'CONTEXT',
   },
   {
-    name: '--page',
-    about: 'Iterate to a specific page of results.',
-    constant: 'PAGE',
-    valueLabel: '<page>',
-  },
-  {
     name: '--ids',
     about: 'Specify the \'ids\' query parameter with a list of IDs.',
     constant: 'IDS',
@@ -74,6 +68,12 @@ const SWITCH_LIST = [
     valueLabel: '<API key|name>',
   },
   {
+    name: '--page',
+    about: 'Iterate to a specific page of results.',
+    constant: 'PAGE',
+    valueLabel: '<page>',
+  },
+  {
     name: '--expand',
     about: 'Expand some ID fields, timestamps to date, etc.',
     constant: 'EXPAND',
@@ -100,7 +100,7 @@ const SWITCH_LIST = [
     constant: 'SILENT',
   },
 
-  // Import/export switches
+  // Import/export to JSON/CSV file switches
   {
     name: '--to-csv',
     about: 'Output array response to a CSV file, such as \'./data.csv\'.',
@@ -136,17 +136,27 @@ const SWITCH_LIST = [
     about: 'Output array response to a JSON file as an array.',
     constant: 'TO_JSON',
     valueLabel: '<input file>',
-  }
+  },
+  {
+    name: '--csv-encoding',
+    about: 'Select CSV file encoding type supported by node, e.g: utf8 or utf16le',
+    constant: 'CSV_ENCODING',
+    valueLabel: '<type>',
+  },
 ];
 
+/**
+ * Apply switches from program arguments to the module.
+ *
+ * @param {Array<string>} args - Program args.
+ * @returns {Array<string>} Program args.
+ */
 const apply = (args) => {
   args
     .filter(item => item.includes('--'))
     .forEach((arg) => {
       const valid = SWITCH_LIST.find(({ name }) => name === arg);
-      if (!valid) {
-        throw new Error(`Invalid switch: ${arg}.\nType 'evrythng help' to see a list of available switches.`);
-      }
+      if (!valid) throw new Error(`Invalid switch: ${arg}.\nType 'evrythng' to see a list of available switches.`);
 
       const foundIndex = args.indexOf(arg);
       const rule = SWITCH_LIST.find(({ name }) => name === arg);

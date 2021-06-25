@@ -343,13 +343,16 @@ const rowToObject = row => Object.keys(row)
  * @param {string} type - Type of EVRYTHNG resource the items in the file should be treated as.
  * @returns {Promise} A Promise that resolves when all items have been created.
  */
-const read = async type =>
-  util.readFile(
+const read = async (type) => {
+  const encoding = switches.CSV_ENCODING || 'utf8';
+
+  return util.readFile(
     type,
     switches.FROM_CSV, 
-    path => neatCsv(fs.readFileSync(path, 'utf8')), 
+    path => neatCsv(fs.readFileSync(path, encoding)),
     rowToObject,
   );
+};
 
 /**
  * Write some array of EVRYTHNG objects to a CSV file.
@@ -359,7 +362,9 @@ const read = async type =>
  */
 const write = async (items, path) => {
   const data = await createCsvData(items);
-  fs.writeFileSync(path, data.join('\n'), 'utf8');
+
+  const encoding = switches.CSV_ENCODING || 'utf8';
+  fs.writeFileSync(path, data.join('\n'), encoding);
 };
 
 module.exports = {
