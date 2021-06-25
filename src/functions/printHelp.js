@@ -90,7 +90,7 @@ module.exports = () => {
   logger.info(indent('$ evrythng <command> <params>... [<payload>] [<switches>...]', 4));
 
   logger.info('\nDocumentation:\n');
-  logger.info(indent('https://github.com/evrythng/evrythng-cli', 4));
+  logger.info(indent('https://github.com/C-D-Lewis/evrythng-cli#readme', 4));
 
   logger.info('\nAvailable Commands:\n');
   logger.info(indent('Specify a command name (or short version) below to see all its operations.\n', 4));
