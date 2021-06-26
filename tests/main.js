@@ -51,6 +51,8 @@ describe('CLI', () => {
   require('./commands/thng');
   require('./commands/url');
 
+  require('./functions/printHelp');
+
   require('./modules/api');
   require('./modules/commands');
   require('./modules/config');

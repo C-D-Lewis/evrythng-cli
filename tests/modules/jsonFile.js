@@ -7,7 +7,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const fs = require('fs');
 const { mockApi } = require('../util');
-const cli = require('../../src/functions/cli');
 const jsonFile = require('../../src/modules/jsonFile');
 const switches = require('../../src/modules/switches');
 
@@ -84,7 +83,7 @@ describe('jsonFile', () => {
       .reply(201, {});
 
     // Includes Operator creation
-    const accessMock = mockApi()
+    mockApi()
       .persist()
       .get('/access')
       .reply(200, { actor: { id: '123' } })

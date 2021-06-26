@@ -3,11 +3,15 @@
  * All rights reserved. Use of this material is subject to license.
  */
 
-const { expect } = require('chai');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 const sinon = require('sinon');
 const prompt = require('../../src/modules/prompt');
 const switches = require('../../src/modules/switches');
 const util = require('../../src/modules/util');
+
+const { expect } = chai;
+chai.use(chaiAsPromised);
 
 describe('util', () => {
   afterEach(() => {
@@ -50,12 +54,19 @@ describe('util', () => {
     expect(printSimple).to.not.throw();
   });
 
-  it('should not throw and error for requireKey', () => {
+  it('should not throw an error for requireKey', () => {
     const key = '12345687123456812345678123456781234567812345678123456871234568712345678123465781';
     switches.API_KEY = key;
 
     const requireKey = () => util.requireKey('Application');
     expect(requireKey).to.not.throw();
+
+    switches.API_KEY = undefined;
+  });
+
+  it('should throw if a required key is not provided', () => {
+    const requireKey = () => util.requireKey('Application');
+    expect(requireKey).to.throw();
   });
 
   it('should build a correct thng payload using the user prompts', async () => {
@@ -66,6 +77,12 @@ describe('util', () => {
 
     const payload = await util.getPayload('ThngDocument');
     expect(payload).to.have.property('name', 'TestThng');
+    switches.BUILD = undefined;
+  });
+
+  it('should throw if builder JSON string is invalid JSON', async () => {
+    const getPayload = util.getPayload('foo', 'thisinotjson');
+    return expect(getPayload).to.eventually.be.rejected;
   });
 
   it('should build the correct thng payload using JSON', async () => {
