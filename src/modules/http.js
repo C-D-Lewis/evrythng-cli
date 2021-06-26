@@ -170,7 +170,9 @@ const goToPage = async (res, endPage) => {
     page += 1;
   }
 
-  return res.json();
+  // Set data, return res. Otherwise case above makes it circular.
+  res.data = await res.json();
+  return res;
 };
 
 /**
@@ -215,7 +217,7 @@ const printResponse = async (res) => {
   // Wait until page reached
   const page = switches.PAGE;
   if (page && page !== '0') {
-    res.data = await goToPage(res, parseInt(page, 10));
+    res = await goToPage(res, parseInt(page, 10));
   }
 
   // Silent switch - just return data
