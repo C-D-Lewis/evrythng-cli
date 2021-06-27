@@ -165,6 +165,9 @@ echo $THNG_ID
 
 Export places to CSV file:
 
+> You may need to specify a non-`utf8` encoding option for some consumers, such
+> as using `--csv-encoding utf16le` for Microsoft Excel.
+
 ```shell
 $ evrythng places list --to-csv places.csv --per-page 100 --to-page 10
 ```
