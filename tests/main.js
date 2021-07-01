@@ -30,6 +30,7 @@ describe('CLI', () => {
   require('./commands/access-tokens');
   require('./commands/accesses');
   require('./commands/account');
+  require('./commands/account-config');
   require('./commands/action');
   require('./commands/action-type');
   require('./commands/adi-order');

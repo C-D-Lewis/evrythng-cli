@@ -137,7 +137,7 @@ const removeKey = ([name]) => {
   logger.info(`\nRemoved key '${name}'`);
 
   if (config.get('using') === name) {
-    console.log('Key was in use, please choose another.');
+    console.log('Key was in use, please choose another one now.');
     config.set('using', '');
   }
 };

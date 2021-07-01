@@ -30,7 +30,7 @@ const getFirstAccount = async () => {
  */
 const ensureNameValid = (name) => {
   if (!configNames.includes(name)) {
-    throw new Error(`Configuration ${name} is invalid.\n\nChoose from ${configNames.join(', ')}`);
+    throw new Error(`Configuration name '${name}' is invalid.\n\nSelect from:\n${configNames.join(', ')}`);
   }
 };
 
@@ -40,6 +40,10 @@ module.exports = {
   about: 'Update account configuration.',
   firstArg: 'account-config',
   operations: {
+    help: {
+      execute: () => console.log(`\nSelect 'name' from:\n${configNames.join(', ')}`),
+      pattern: 'help',
+    },
     listAccountConfigs: {
       execute: async () => {
         const { configuration } = await getFirstAccount();
