@@ -12,6 +12,7 @@ const COMMAND_LIST = [
   require('../commands/access'),
   require('../commands/accesses'),
   require('../commands/account'),
+  require('../commands/account-config'),
   require('../commands/action-type'),
   require('../commands/action'),
   require('../commands/adi-order'),
